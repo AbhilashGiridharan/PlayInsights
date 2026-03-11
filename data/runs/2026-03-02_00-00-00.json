@@ -1,0 +1,19 @@
+{
+  "runId": "ef056789_2026-03-02_00-00-00",
+  "timestamp": "2026-03-02T00:00:00.000Z",
+  "branch": "feature/dark-mode",
+  "commit": "ef0567890000000000000000000000000000000",
+  "author": "contributor1",
+  "ciUrl": "https://github.com/owner/playwright-results-dashboard/actions/runs/1005",
+  "totals": { "passed": 9, "failed": 3, "skipped": 1, "flaky": 1 },
+  "durations": { "totalMs": 51000, "avgTestMs": 3900, "p95TestMs": 9100 },
+  "passRate": 75.0,
+  "suites": [
+    { "name": "tests/example.spec.ts", "passed": 9, "failed": 3, "skipped": 1, "durationMs": 51000 }
+  ],
+  "projects": [
+    { "name": "chromium", "passed": 3, "failed": 1, "skipped": 0 },
+    { "name": "firefox", "passed": 3, "failed": 1, "skipped": 1 },
+    { "name": "webkit", "passed": 3, "failed": 1, "skipped": 0 }
+  ]
+}

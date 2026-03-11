@@ -1,0 +1,19 @@
+{
+  "runId": "45612345_2026-03-08_00-00-00",
+  "timestamp": "2026-03-08T00:00:00.000Z",
+  "branch": "feature/retry-logic",
+  "commit": "456123450000000000000000000000000000000",
+  "author": "contributor2",
+  "ciUrl": "https://github.com/owner/playwright-results-dashboard/actions/runs/1011",
+  "totals": { "passed": 11, "failed": 1, "skipped": 1, "flaky": 2 },
+  "durations": { "totalMs": 52000, "avgTestMs": 3900, "p95TestMs": 9400 },
+  "passRate": 91.7,
+  "suites": [
+    { "name": "tests/example.spec.ts", "passed": 11, "failed": 1, "skipped": 1, "durationMs": 52000 }
+  ],
+  "projects": [
+    { "name": "chromium", "passed": 4, "failed": 0, "skipped": 0 },
+    { "name": "firefox", "passed": 3, "failed": 1, "skipped": 1 },
+    { "name": "webkit", "passed": 4, "failed": 0, "skipped": 0 }
+  ]
+}

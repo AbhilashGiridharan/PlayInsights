@@ -1,0 +1,24 @@
+# Node
+node_modules/
+dist-scripts/
+
+# Playwright outputs (don't commit the raw HTML report, only the data summaries)
+playwright-report/
+test-results/
+
+# Vite build output
+site/dist/
+site/node_modules/
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+.idea/
+*.swp

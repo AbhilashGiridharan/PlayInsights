@@ -1,0 +1,19 @@
+{
+  "runId": "f0167890_2026-03-03_00-00-00",
+  "timestamp": "2026-03-03T00:00:00.000Z",
+  "branch": "main",
+  "commit": "f01678900000000000000000000000000000000",
+  "author": "octocat",
+  "ciUrl": "https://github.com/owner/playwright-results-dashboard/actions/runs/1006",
+  "totals": { "passed": 12, "failed": 0, "skipped": 1, "flaky": 0 },
+  "durations": { "totalMs": 33000, "avgTestMs": 2750, "p95TestMs": 5900 },
+  "passRate": 100,
+  "suites": [
+    { "name": "tests/example.spec.ts", "passed": 12, "failed": 0, "skipped": 1, "durationMs": 33000 }
+  ],
+  "projects": [
+    { "name": "chromium", "passed": 4, "failed": 0, "skipped": 0 },
+    { "name": "firefox", "passed": 4, "failed": 0, "skipped": 1 },
+    { "name": "webkit", "passed": 4, "failed": 0, "skipped": 0 }
+  ]
+}
