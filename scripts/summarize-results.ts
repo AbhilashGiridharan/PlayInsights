@@ -19,6 +19,8 @@ import * as fs from "fs";
 import * as path from "path";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
+// Playwright JSON reporter structure (v1.40+):
+//   report → suites (projects) → suites (files) → specs (test titles) → tests (per-project) → results (per-retry)
 
 interface PWTestResult {
   status: "passed" | "failed" | "timedOut" | "skipped" | "interrupted";
@@ -26,17 +28,24 @@ interface PWTestResult {
   retry: number;
 }
 
-interface PWTestCase {
-  title: string;
-  status?: string;
+interface PWTest {
+  /** "expected" | "unexpected" | "flaky" | "skipped" */
+  status: string;
+  expectedStatus: string;
   results: PWTestResult[];
+}
+
+interface PWSpec {
+  title: string;
+  ok: boolean;
+  tests: PWTest[];
 }
 
 interface PWSuite {
   title: string;
   file?: string;
   suites?: PWSuite[];
-  specs?: PWTestCase[];
+  specs?: PWSpec[];
 }
 
 interface PWReport {
@@ -88,37 +97,33 @@ function ensureDir(dirPath: string): void {
   fs.mkdirSync(dirPath, { recursive: true });
 }
 
-/** Flatten all spec/test-case nodes from a (possibly nested) suite tree. */
-function collectTests(suite: PWSuite): PWTestCase[] {
-  const tests: PWTestCase[] = [];
-  if (suite.specs) tests.push(...suite.specs);
+/** Flatten all spec nodes from a (possibly nested) suite tree. */
+function collectTests(suite: PWSuite): PWSpec[] {
+  const specs: PWSpec[] = [];
+  if (suite.specs) specs.push(...suite.specs);
   if (suite.suites) {
     for (const child of suite.suites) {
-      tests.push(...collectTests(child));
+      specs.push(...collectTests(child));
     }
   }
-  return tests;
+  return specs;
 }
 
-/** Determine whether any result in a test is "flaky" (retry succeeded). */
-function isFlaky(testCase: PWTestCase): boolean {
-  if (testCase.results.length < 2) return false;
-  const hasFailure = testCase.results.some((r) =>
-    ["failed", "timedOut"].includes(r.status)
-  );
-  const hasPassed = testCase.results.some((r) => r.status === "passed");
-  return hasFailure && hasPassed;
+/** A spec is flaky when Playwright marks any of its per-project tests as "flaky". */
+function isFlaky(spec: PWSpec): boolean {
+  return spec.tests.some((t) => t.status === "flaky");
 }
 
-/** Determine the final status of a test case. */
+/** Determine the final status of a spec. */
 function finalStatus(
-  testCase: PWTestCase
+  spec: PWSpec
 ): "passed" | "failed" | "skipped" | "flaky" {
-  if (isFlaky(testCase)) return "flaky";
-  const last = testCase.results[testCase.results.length - 1];
-  if (!last) return "skipped";
-  if (last.status === "passed") return "passed";
-  if (last.status === "skipped") return "skipped";
+  if (isFlaky(spec)) return "flaky";
+  if (spec.ok) return "passed";
+  // If every result in every test attempt is skipped, call it skipped
+  const allResults = spec.tests.flatMap((t) => t.results);
+  if (allResults.length === 0) return "skipped";
+  if (allResults.every((r) => r.status === "skipped")) return "skipped";
   return "failed";
 }
 
@@ -207,7 +212,12 @@ function main(): void {
       const tests = collectTests(fileSuite);
       for (const t of tests) {
         const status = finalStatus(t);
-        const duration = t.results.reduce((sum, r) => sum + (r.duration ?? 0), 0);
+        // Sum durations across all tests (per-project runs) and their retries
+        const duration = t.tests.reduce(
+          (sum: number, test) =>
+            sum + test.results.reduce((s: number, r) => s + (r.duration ?? 0), 0),
+          0
+        );
         allDurations.push(duration);
         suite.durationMs += duration;
 
