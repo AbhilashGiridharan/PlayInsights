@@ -16,8 +16,8 @@
  */
 
 // ── Owner / repo / branch – edit these after forking ────────────────────────
-export const GITHUB_OWNER = "owner";
-export const GITHUB_REPO = "playwright-results-dashboard";
+export const GITHUB_OWNER = "QE-CoE";
+export const GITHUB_REPO = "InsightsDemo";
 export const GITHUB_BRANCH = "main";
 
 // ── Data base URL ────────────────────────────────────────────────────────────

@@ -2,11 +2,11 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  // When deployed to GitHub Pages under a sub-path, set the base here:
-  // base: "/playwright-results-dashboard/",
-  base: "./",
+  // In production (GitHub Pages) the site lives at /InsightsDemo/
+  // In dev the Vite dev-server serves from /
+  base: mode === "production" ? "/InsightsDemo/" : "/",
   build: {
     outDir: "dist",
     rollupOptions: {
@@ -14,8 +14,9 @@ export default defineConfig({
         // Code-split chart.js for better Lighthouse score
         manualChunks: {
           "chart-vendor": ["chart.js", "react-chartjs-2"],
+          "react-vendor": ["react", "react-dom"],
         },
       },
     },
   },
-});
+}));

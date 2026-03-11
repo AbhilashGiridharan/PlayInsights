@@ -5,21 +5,19 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  # Allow manual triggers
   workflow_dispatch:
 
-# Permissions required for data commits + GitHub Pages deployment
 permissions:
   contents: write
   pages: write
   id-token: write
   actions: read
 
+# Only one Pages deployment at a time; never cancel data-commit jobs
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false   # Never cancel in-progress data commits
+  group: pages
+  cancel-in-progress: false
 
-# ────────────────────────────────────────────────────────────────────────────────
 jobs:
 # ── 1. Run Playwright tests ───────────────────────────────────────────────────
   test:
@@ -42,7 +40,8 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run tests
-        run: npm run test -- --reporter=list,html,json
+        run: npm run test
+        continue-on-error: true        # record failures without blocking deploy
         env:
           CI: "true"
 
@@ -54,19 +53,25 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
+      - name: Upload JSON report artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-json-report
+          path: playwright-report/results.json
+          retention-days: 30
+
 # ── 2. Summarize results & commit data ────────────────────────────────────────
   summarize-and-commit:
     name: 📊 Summarize & Commit Data
     runs-on: ubuntu-latest
     needs: test
-    # Run even when tests fail so we record the failure data
     if: always() && github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout (with write access)
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          # Fetch full history so we can push
           fetch-depth: 0
 
       - name: Setup Node 20
@@ -78,13 +83,10 @@ jobs:
       - name: Install root dependencies
         run: npm ci
 
-      # Re-run tests in CI to regenerate playwright-report/results.json
-      # (artifacts from previous job are available below, but re-running
-      #  ensures the JSON is fresh; alternatively download the artifact)
-      - name: Download test results artifact
+      - name: Download JSON report artifact
         uses: actions/download-artifact@v4
         with:
-          name: playwright-html-report
+          name: playwright-json-report
           path: playwright-report/
 
       - name: Generate run summary
@@ -97,24 +99,26 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_ACTOR: ${{ github.actor }}
 
-      - name: Regenerate data index
+      - name: Rebuild data index
         run: npm run update:index
 
-      - name: Commit data files
+      - name: Commit & push data files
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
           git add data/
-          git diff --staged --quiet && echo "No data changes to commit." || \
-            git commit -m "chore(data): add results for ${{ github.sha }}"
-          git push
+          git diff --staged --quiet && echo "No data changes." || \
+            git commit -m "chore(data): add results for ${GITHUB_SHA:0:8} [skip ci]"
+          git push origin main
+        env:
+          GITHUB_SHA: ${{ github.sha }}
 
 # ── 3. Build site & deploy to GitHub Pages ────────────────────────────────────
   build-and-deploy-pages:
-    name: 🚀 Build & Deploy Dashboard
+    name: 🚀 Build & Deploy to GitHub Pages
     runs-on: ubuntu-latest
     needs: summarize-and-commit
-    # Only deploy on pushes to main (not PRs)
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     environment:
       name: github-pages
@@ -123,8 +127,8 @@ jobs:
       - name: Checkout (after data commit)
         uses: actions/checkout@v4
         with:
-          # Get the latest commit which includes the newly committed data files
           ref: main
+          fetch-depth: 1
 
       - name: Setup Node 20
         uses: actions/setup-node@v4
@@ -137,14 +141,13 @@ jobs:
         working-directory: site
         run: npm ci
 
-      - name: Build site
+      - name: Build Vite site
         working-directory: site
         run: npm run build
         env:
-          # Point the site at the correct raw GitHub URL for your repo
           VITE_DATA_BASE: "https://raw.githubusercontent.com/${{ github.repository }}/main/data"
 
-      - name: Copy data/ into dist so local preview works too
+      - name: Copy data/ into dist (enables local preview of built site)
         run: cp -r data/ site/dist/data
 
       - name: Setup GitHub Pages
