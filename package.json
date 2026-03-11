@@ -6,8 +6,7 @@
   "scripts": {
     "test": "playwright test",
     "summarize": "ts-node --project tsconfig.scripts.json scripts/summarize-results.ts",
-    "update:index": "ts-node --project tsconfig.scripts.json scripts/update-index.ts",
-    "posttest": "npm run summarize && npm run update:index"
+    "update:index": "ts-node --project tsconfig.scripts.json scripts/update-index.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.43.0",
