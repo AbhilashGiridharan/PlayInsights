@@ -1,43 +1,37 @@
 {
-  "runId": "92172f5e_2026-03-12_10-01-31",
-  "timestamp": "2026-03-12T10:01:31.011Z",
+  "runId": "InsightsLogs_2026-03-12_09-14-52",
+  "timestamp": "2026-03-12T09:15:22.341Z",
   "branch": "main",
-  "commit": "92172f5e07a223d062c6c5736ec63f4af90d0df3",
+  "commit": "428033d80dca859c893338c32ab410467350d139",
   "author": "AbhilashGiridharan",
-  "ciUrl": "https://github.com/QE-CoE/InsightsDemo/actions/runs/22996345791",
+  "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_09-14-52",
+  "source": "InsightsLogs",
   "totals": {
-    "passed": 12,
-    "failed": 3,
+    "passed": 6,
+    "failed": 0,
     "skipped": 0,
     "flaky": 0
   },
   "durations": {
-    "totalMs": 56524,
-    "avgTestMs": 3768,
-    "p95TestMs": 17205
+    "totalMs": 25362,
+    "avgTestMs": 4227,
+    "p95TestMs": 5539
   },
-  "passRate": 80,
+  "passRate": 100,
   "suites": [
     {
-      "name": "Navigation",
-      "passed": 6,
-      "failed": 3,
-      "skipped": 0,
-      "durationMs": 54855
-    },
-    {
-      "name": "Content",
+      "name": "SauceDemo E2E – Standard User",
       "passed": 6,
       "failed": 0,
       "skipped": 0,
-      "durationMs": 1669
+      "durationMs": 25362
     }
   ],
   "projects": [
     {
-      "name": "example.spec.ts",
-      "passed": 12,
-      "failed": 3,
+      "name": "AbhilashGiridharan/InsightsLogs",
+      "passed": 6,
+      "failed": 0,
       "skipped": 0
     }
   ]
