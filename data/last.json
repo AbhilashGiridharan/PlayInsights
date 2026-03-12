@@ -34,5 +34,13 @@
       "failed": 0,
       "skipped": 0
     }
-  ]
+  ],
+  "longestTest": {
+    "name": "Standard user logs in successfully",
+    "durationMs": 5539
+  },
+  "fastestTest": {
+    "name": "Invalid user cannot log in",
+    "durationMs": 3523
+  }
 }

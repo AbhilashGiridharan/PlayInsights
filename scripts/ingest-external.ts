@@ -74,19 +74,26 @@ interface ProjectSummary {
   skipped: number;
 }
 
+interface TestTiming {
+  name:       string;
+  durationMs: number;
+}
+
 interface RunSummary {
-  runId:     string;
-  timestamp: string;
-  branch:    string;
-  commit:    string;
-  author:    string;
-  ciUrl:     string;
-  source:    string;
-  totals:    { passed: number; failed: number; skipped: number; flaky: number };
-  durations: { totalMs: number; avgTestMs: number; p95TestMs: number };
-  passRate:  number;
-  suites:    SuiteSummary[];
-  projects:  ProjectSummary[];
+  runId:        string;
+  timestamp:    string;
+  branch:       string;
+  commit:       string;
+  author:       string;
+  ciUrl:        string;
+  source:       string;
+  totals:       { passed: number; failed: number; skipped: number; flaky: number };
+  durations:    { totalMs: number; avgTestMs: number; p95TestMs: number };
+  passRate:     number;
+  suites:       SuiteSummary[];
+  projects:     ProjectSummary[];
+  longestTest?: TestTiming;
+  fastestTest?: TestTiming;
 }
 
 interface ExternalSummary {
@@ -249,6 +256,7 @@ async function main(): Promise<void> {
     let totalFailed = 0;
     let totalSkipped = 0;
     const allDurations: number[] = [];
+    const allTests: Array<{ name: string; durationMs: number }> = [];
     const suites: SuiteSummary[] = [];
     const projectEntry: ProjectSummary = {
       name: `${EXTERNAL_OWNER}/${EXTERNAL_REPO}`,
@@ -275,6 +283,7 @@ async function main(): Promise<void> {
           const status = scenarioStatus(el);
           const durMs  = elementDurationMs(el);
           allDurations.push(durMs);
+          allTests.push({ name: el.name, durationMs: durMs });
           suite.durationMs += durMs;
 
           if (status === "passed") {
@@ -296,6 +305,13 @@ async function main(): Promise<void> {
     const denominator = totalPassed + totalFailed || 1;
     const passRate = Math.round((totalPassed / denominator) * 1000) / 10;
 
+    const longestTest = allTests.length > 0
+      ? allTests.reduce((a, b) => (b.durationMs > a.durationMs ? b : a))
+      : undefined;
+    const fastestTest = allTests.length > 0
+      ? allTests.reduce((a, b) => (b.durationMs < a.durationMs ? b : a))
+      : undefined;
+
     const summary: RunSummary = {
       runId:     `${SOURCE_LABEL}_${folder}`,
       timestamp: generatedAt,
@@ -313,6 +329,8 @@ async function main(): Promise<void> {
       passRate,
       suites,
       projects: [projectEntry],
+      longestTest,
+      fastestTest,
     };
 
     fs.writeFileSync(outFile, JSON.stringify(summary, null, 2), "utf8");

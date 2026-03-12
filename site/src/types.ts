@@ -18,6 +18,11 @@ export interface ProjectSummary {
   skipped: number;
 }
 
+export interface TestTiming {
+  name:       string;
+  durationMs: number;
+}
+
 export interface RunSummary {
   runId: string;
   timestamp: string;
@@ -41,6 +46,8 @@ export interface RunSummary {
   passRate: number;
   suites: SuiteSummary[];
   projects: ProjectSummary[];
+  longestTest?: TestTiming;
+  fastestTest?: TestTiming;
 }
 
 export interface IndexEntry {

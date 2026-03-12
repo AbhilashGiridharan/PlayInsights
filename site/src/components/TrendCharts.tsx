@@ -247,7 +247,9 @@ export function TrendCharts({ runs, theme = "dark" }: TrendChartsProps) {
       <div className="chart-panel" style={{ gridColumn: "1 / -1" }}>
         <h3>Duration Trend (last {SPARKLINE_DAYS} runs)</h3>
         <Suspense fallback={<LoadingChart />}>
-          <Line data={durationTrendData} options={durationOptions as never} />
+          <div style={{ maxHeight: 220, position: "relative" }}>
+            <Line data={durationTrendData} options={{ ...durationOptions, maintainAspectRatio: false } as never} />
+          </div>
         </Suspense>
       </div>
     </div>

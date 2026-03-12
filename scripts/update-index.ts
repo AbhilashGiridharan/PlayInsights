@@ -57,6 +57,15 @@ function main(): void {
       entries.length === 1 ? "y" : "ies"
     }.`
   );
+
+  // Also write last.json from the newest run file
+  if (entries.length > 0) {
+    const lastFile = path.join(repoRoot, "data", "last.json");
+    const newestRunPath = path.join(runsDir, entries[0].filename);
+    const newestRun = fs.readFileSync(newestRunPath, "utf8");
+    fs.writeFileSync(lastFile, newestRun, "utf8");
+    console.log(`[update-index] ✅  Wrote data/last.json from ${entries[0].filename}`);
+  }
 }
 
 main();

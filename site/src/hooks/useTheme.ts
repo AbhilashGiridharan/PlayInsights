@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 export type Theme = "dark" | "light";
 
-const STORAGE_KEY = "pw_dashboard_theme";
+const STORAGE_KEY = "insights360_theme";
 
 function getInitialTheme(): Theme {
   try {

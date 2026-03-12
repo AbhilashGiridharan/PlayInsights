@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { useData } from "./hooks/useData";
 import { useTheme } from "./hooks/useTheme";
 import { SummaryCards } from "./components/SummaryCards";
+import { DailySummary } from "./components/DailySummary";
 import { STALE_THRESHOLD_MS } from "./config";
 
 // Code-split heavy chart components
@@ -54,8 +55,8 @@ function App() {
       {/* Header */}
       <header className="header">
         <div className="header-title">
-          <span>🎭</span>
-          <span>Playwright Results Dashboard</span>
+          <span>🔭</span>
+          <span>Insights360</span>
         </div>
         <div className="header-actions">
           {lastFetchedAt && (
@@ -118,12 +119,23 @@ function App() {
           </div>
         ) : (
           <>
-            {/* Summary Cards */}
+            {/* Overview + Daily Summary – unified panel */}
             <div className="section-title">Overview</div>
-            <SummaryCards runs={runs} latest={latest} />
+            <div className="overview-layout">
+              <div className="overview-main">
+                <SummaryCards runs={runs} latest={latest} />
+              </div>
+              <div className="overview-aside">
+                <div className="aside-header">
+                  <span>📅</span>
+                  <span>Summary of the Day</span>
+                </div>
+                <DailySummary runs={runs} />
+              </div>
+            </div>
 
             {/* Charts */}
-            {runs.length > 1 && (
+            {runs.length > 0 && (
               <>
                 <div className="section-title">Trends</div>
                 <Suspense fallback={<LoadingSpinner />}>
@@ -142,7 +154,7 @@ function App() {
       </main>
 
       <footer className="footer">
-        Playwright Results Dashboard — data served from{" "}
+        Insights360 — data served from{" "}
         <a
           href="https://raw.githubusercontent.com"
           target="_blank"

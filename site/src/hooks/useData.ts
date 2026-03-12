@@ -12,7 +12,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { DATA_BASE, AUTO_REFRESH_MS, MAX_RUNS, STALE_THRESHOLD_MS } from "../config";
 import type { RunSummary, IndexEntry } from "../types";
 
-const CACHE_KEY = "pw_dashboard_runs";
+const CACHE_KEY = "insights360_runs";
 const CACHE_TTL_MS = 60_000; // 1 min cache validity
 
 interface CacheEntry {
