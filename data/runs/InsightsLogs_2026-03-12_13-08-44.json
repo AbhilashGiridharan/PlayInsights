@@ -1,10 +1,10 @@
 {
-  "runId": "InsightsLogs_2026-03-12_14-13-58",
-  "timestamp": "2026-03-12T14:14:42.561Z",
+  "runId": "InsightsLogs_2026-03-12_13-08-44",
+  "timestamp": "2026-03-12T13:09:27.897Z",
   "branch": "main",
-  "commit": "e0385a568280da6be9a6a6231877f5ba21cf48f6",
+  "commit": "d21bd31d20d3e840f27c2bd1565f92850fc3e1d8",
   "author": "AbhilashGiridharan",
-  "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_14-13-58",
+  "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_13-08-44",
   "source": "InsightsLogs",
   "totals": {
     "passed": 6,
@@ -13,9 +13,9 @@
     "flaky": 0
   },
   "durations": {
-    "totalMs": 39212,
-    "avgTestMs": 4902,
-    "p95TestMs": 9002
+    "totalMs": 38437,
+    "avgTestMs": 4805,
+    "p95TestMs": 8608
   },
   "passRate": 75,
   "suites": [
@@ -24,7 +24,7 @@
       "passed": 6,
       "failed": 2,
       "skipped": 0,
-      "durationMs": 39212
+      "durationMs": 38437
     }
   ],
   "projects": [
@@ -37,10 +37,10 @@
   ],
   "longestTest": {
     "name": "[FAIL] Locked out user should reach inventory page",
-    "durationMs": 9002
+    "durationMs": 8608
   },
   "fastestTest": {
-    "name": "Locked out user cannot log in",
-    "durationMs": 3681
+    "name": "Invalid user cannot log in",
+    "durationMs": 3563
   }
 }
