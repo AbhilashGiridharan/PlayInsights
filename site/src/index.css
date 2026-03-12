@@ -666,6 +666,21 @@ tbody td {
 }
 .fa2-summary-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
 .fa2-summary-meta  { font-size: 11px; color: var(--text-muted); }
+.fa2-summary-right { display: flex; align-items: center; gap: 10px; }
+.fa2-run-select {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  outline: none;
+  max-width: 300px;
+}
+.fa2-run-select:hover,
+.fa2-run-select:focus { border-color: var(--accent-purple); }
+.fa2-no-failures { color: var(--accent-green) !important; font-weight: 500; }
 .fa2-kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

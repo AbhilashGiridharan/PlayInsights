@@ -133,7 +133,7 @@ function App() {
 
             {/* Failure Analysis */}
             <div className="section-title">Failure Analysis</div>
-            <FailureAnalyticsSection dataUrl={`${DATA_BASE}/analysis.json`} />
+            <FailureAnalyticsSection dataUrl={`${DATA_BASE}/analysis.json`} runs={runs} />
 
             {/* Charts */}
             {runs.length > 0 && (

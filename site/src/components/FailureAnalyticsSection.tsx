@@ -4,6 +4,7 @@
  */
 
 import { useEffect, useState } from "react";
+import type { RunSummary } from "../types";
 
 // -- Types --
 interface RootCause   { type: string; count: number }
@@ -61,7 +62,7 @@ interface AnalysisPayload {
   impactAssessment?: ImpactAssessment;
   actionItems?: ActionItem[];
 }
-interface Props { dataUrl: string; className?: string }
+interface Props { dataUrl: string; runs?: RunSummary[]; className?: string }
 
 // -- Utils --
 function clx(...a: (string | undefined | false)[]) { return a.filter(Boolean).join(" "); }
@@ -487,11 +488,32 @@ const TABS = [
 ];
 
 // == MAIN COMPONENT ==
-export function FailureAnalyticsSection({ dataUrl, className }: Props) {
+function formatRunOption(run: RunSummary, latestRunId: string | null): string {
+  const d = new Date(run.timestamp);
+  const date = d.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
+  const time = d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const status = run.totals.failed > 0 ? `${run.totals.failed} failed` : "✓ all passed";
+  return `${date} · ${time}  —  ${status}${run.runId === latestRunId ? "  (latest)" : ""}`;
+}
+
+export function FailureAnalyticsSection({ dataUrl, runs: runsProp, className }: Props) {
   const [data,    setData]    = useState<AnalysisPayload | null>(null);
   const [err,     setErr]     = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab,     setTab]     = useState("errors");
+
+  // Run selector: default to the run with the latest timestamp
+  const latestRunId = runsProp && runsProp.length > 0
+    ? runsProp.reduce((best, r) =>
+        new Date(r.timestamp) > new Date(best.timestamp) ? r : best
+      ).runId
+    : null;
+  const [selectedRunId, setSelectedRunId] = useState<string | null>(latestRunId);
+
+  // Keep selection in sync when runs data first arrives
+  useEffect(() => {
+    if (latestRunId) setSelectedRunId(prev => prev ?? latestRunId);
+  }, [latestRunId]);
 
   useEffect(() => {
     setLoading(true); setErr(null);
@@ -507,29 +529,83 @@ export function FailureAnalyticsSection({ dataUrl, className }: Props) {
   if (!data)   return null;
 
   const {
-    summary, coverage, rootCauses,
+    rootCauses: allRootCauses,
     errorContext = [], rca = [], failureMapping = [],
     codeFixes = [], suggestedImprovements = [],
     impactAssessment, actionItems = [],
+    recentFailures = [],
   } = data;
 
-  const openActions = actionItems.filter(a => a.status === "Open").length;
+  // -- Derive effective data for the selected run --
+  const selectedRun = runsProp?.find(r => r.runId === selectedRunId) ?? null;
 
-  const riskColor = impactAssessment
-    ? impactAssessment.overallRisk === "Critical" ? "var(--accent-red)"
-    : impactAssessment.overallRisk === "High"     ? "var(--accent-yellow)"
-    : impactAssessment.overallRisk === "Medium"   ? "var(--accent-blue)"
+  const effectiveSummary = selectedRun
+    ? {
+        failures:    selectedRun.totals.failed,
+        failureRate: (selectedRun.totals.passed + selectedRun.totals.failed) > 0
+          ? parseFloat(((selectedRun.totals.failed / (selectedRun.totals.passed + selectedRun.totals.failed)) * 100).toFixed(1))
+          : 0,
+        newFailures: data.summary.newFailures,
+        flakyTests:  selectedRun.totals.flaky,
+      }
+    : data.summary;
+
+  const effectiveCoverage = selectedRun
+    ? {
+        totalTests: selectedRun.totals.passed + selectedRun.totals.failed + selectedRun.totals.skipped,
+        executed:   selectedRun.totals.passed + selectedRun.totals.failed,
+      }
+    : data.coverage;
+
+  // Filter failures to the selected run
+  const effectiveRecentFailures = selectedRunId
+    ? recentFailures.filter(f => f.runId === selectedRunId)
+    : recentFailures;
+
+  const failedTestIds = new Set(effectiveRecentFailures.map(f => f.testId));
+  const hasFailures   = effectiveSummary.failures > 0;
+
+  // Derive root causes from current run's failures
+  const effectiveRootCauses: RootCause[] = hasFailures
+    ? selectedRun
+      ? Object.entries(
+          effectiveRecentFailures.reduce<Record<string, number>>((acc, f) => {
+            acc[f.rootCause] = (acc[f.rootCause] ?? 0) + 1; return acc;
+          }, {})
+        ).map(([type, count]) => ({ type, count }))
+      : allRootCauses
+    : [];
+
+  // Tab data: filter / suppress based on selected run
+  const effectiveErrors       = hasFailures ? errorContext.filter(e => failedTestIds.has(e.testId)) : [];
+  const effectiveRca          = hasFailures ? rca          : [];
+  const effectiveMapping      = hasFailures ? failureMapping : [];
+  const effectiveFixes        = hasFailures ? codeFixes    : [];
+  const effectiveImprovements = hasFailures ? suggestedImprovements : [];
+  const effectiveImpact       = hasFailures ? impactAssessment : undefined;
+  const effectiveActions      = hasFailures ? actionItems  : [];
+
+  const openActions = effectiveActions.filter(a => a.status === "Open").length;
+
+  const riskColor = effectiveImpact
+    ? effectiveImpact.overallRisk === "Critical" ? "var(--accent-red)"
+    : effectiveImpact.overallRisk === "High"     ? "var(--accent-yellow)"
+    : effectiveImpact.overallRisk === "Medium"   ? "var(--accent-blue)"
     : "var(--accent-green)"
     : undefined;
 
   const kpis = [
-    { label: "Total Failures",  value: String(summary.failures),    color: "var(--accent-red)",    sub: "tests failed" },
-    { label: "Failure Rate",    value: fmtPct(summary.failureRate), color: summary.failureRate > 10 ? "var(--accent-red)" : "var(--accent-yellow)", sub: "of all tests" },
-    { label: "New Failures",    value: String(summary.newFailures), color: "var(--accent-yellow)", sub: "newly introduced" },
-    { label: "Flaky Tests",     value: String(summary.flakyTests),  color: "var(--accent-purple)", sub: "intermittent" },
-    { label: "Open Actions",    value: String(openActions),         color: "var(--accent-blue)",   sub: `of ${actionItems.length} total` },
-    ...(impactAssessment ? [{ label: "Overall Risk", value: impactAssessment.overallRisk, color: riskColor ?? "var(--text-muted)", sub: impactAssessment.estimatedFixTime }] : []),
+    { label: "Total Failures", value: String(effectiveSummary.failures),    color: "var(--accent-red)",    sub: "tests failed" },
+    { label: "Failure Rate",   value: fmtPct(effectiveSummary.failureRate), color: effectiveSummary.failureRate > 10 ? "var(--accent-red)" : "var(--accent-yellow)", sub: "of all tests" },
+    { label: "New Failures",   value: String(effectiveSummary.newFailures), color: "var(--accent-yellow)", sub: "newly introduced" },
+    { label: "Flaky Tests",    value: String(effectiveSummary.flakyTests),  color: "var(--accent-purple)", sub: "intermittent" },
+    { label: "Open Actions",   value: String(openActions),                  color: "var(--accent-blue)",   sub: `of ${effectiveActions.length} total` },
+    ...(effectiveImpact ? [{ label: "Overall Risk", value: effectiveImpact.overallRisk, color: riskColor ?? "var(--text-muted)", sub: effectiveImpact.estimatedFixTime }] : []),
   ];
+
+  const runTimeMeta = selectedRun
+    ? new Date(selectedRun.timestamp).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false })
+    : null;
 
   return (
     <div className={clx("fa2-root", className)}>
@@ -538,7 +614,25 @@ export function FailureAnalyticsSection({ dataUrl, className }: Props) {
       <div className="fa2-summary-panel">
         <div className="fa2-summary-header">
           <span className="fa2-summary-title">Failure Analysis Summary</span>
-          <span className="fa2-summary-meta">Generated {timeAgo(data.generatedAt)}</span>
+          <div className="fa2-summary-right">
+            {runsProp && runsProp.length > 1 && (
+              <select
+                className="fa2-run-select"
+                value={selectedRunId ?? ""}
+                onChange={e => setSelectedRunId(e.target.value)}
+                title="Select execution run"
+              >
+                {[...runsProp].reverse().map(r => (
+                  <option key={r.runId} value={r.runId}>
+                    {formatRunOption(r, latestRunId)}
+                  </option>
+                ))}
+              </select>
+            )}
+            <span className="fa2-summary-meta">
+              {runTimeMeta ? `Run · ${runTimeMeta}` : `Generated ${timeAgo(data.generatedAt)}`}
+            </span>
+          </div>
         </div>
         <div className="fa2-kpi-grid">
           {kpis.map(k => (
@@ -548,10 +642,12 @@ export function FailureAnalyticsSection({ dataUrl, className }: Props) {
               <span className="fa2-kpi-sub">{k.sub}</span>
             </div>
           ))}
-          {coverage && (
+          {effectiveCoverage && (
             <div className="fa2-kpi-card" style={{ borderLeft: "3px solid var(--accent-green)" }}>
               <span className="fa2-kpi-lbl">Tests Run</span>
-              <span className="fa2-kpi-val" style={{ color: "var(--accent-green)" }}>{coverage.executed}<span className="fa2-kpi-of">/{coverage.totalTests}</span></span>
+              <span className="fa2-kpi-val" style={{ color: "var(--accent-green)" }}>
+                {effectiveCoverage.executed}<span className="fa2-kpi-of">/{effectiveCoverage.totalTests}</span>
+              </span>
               <span className="fa2-kpi-sub">executed</span>
             </div>
           )}
@@ -571,13 +667,21 @@ export function FailureAnalyticsSection({ dataUrl, className }: Props) {
         </div>
 
         <div className="fa2-panel" role="tabpanel">
-          {tab === "errors"       && <TabErrors      items={errorContext} />}
-          {tab === "rca"          && <TabRCA         items={rca} rootCauses={rootCauses} />}
-          {tab === "mapping"      && <TabMapping     items={failureMapping} />}
-          {tab === "fixes"        && <TabFixes       items={codeFixes} />}
-          {tab === "improvements" && <TabImprovements items={suggestedImprovements} />}
-          {tab === "impact"       && <TabImpact      data={impactAssessment} />}
-          {tab === "actions"      && <TabActions     items={actionItems} />}
+          {!hasFailures ? (
+            <div className="fa2-empty fa2-no-failures">
+              ✅ No failures in this run — all {effectiveCoverage?.executed ?? 0} tests passed.
+            </div>
+          ) : (
+            <>
+              {tab === "errors"       && <TabErrors       items={effectiveErrors} />}
+              {tab === "rca"          && <TabRCA          items={effectiveRca} rootCauses={effectiveRootCauses} />}
+              {tab === "mapping"      && <TabMapping      items={effectiveMapping} />}
+              {tab === "fixes"        && <TabFixes        items={effectiveFixes} />}
+              {tab === "improvements" && <TabImprovements items={effectiveImprovements} />}
+              {tab === "impact"       && <TabImpact       data={effectiveImpact} />}
+              {tab === "actions"      && <TabActions      items={effectiveActions} />}
+            </>
+          )}
         </div>
       </div>
 

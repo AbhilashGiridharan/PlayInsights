@@ -1,57 +1,46 @@
 {
-  "generatedAt": "2026-03-12T12:00:00.000Z",
-  "coverage": { "totalTests": 22, "executed": 22 },
+  "generatedAt": "2026-03-12T11:54:11.997Z",
+  "coverage": {
+    "totalTests": 8,
+    "executed": 8
+  },
   "summary": {
-    "failures": 4,
-    "failureRate": 18.18,
+    "failures": 2,
+    "failureRate": 25.0,
     "newFailures": 2,
     "flakyTests": 0
   },
   "rootCauses": [
-    { "type": "Assertion Error",      "count": 2 },
-    { "type": "Auth / Access Denied", "count": 2 }
+    {
+      "type": "Assertion Error",
+      "count": 1
+    },
+    {
+      "type": "Auth / Access Denied",
+      "count": 1
+    }
   ],
   "byComponent": [
-    { "name": "Cart",         "failures": 2 },
-    { "name": "Login / Auth", "failures": 2 }
+    {
+      "name": "Cart",
+      "failures": 1
+    },
+    {
+      "name": "Login / Auth",
+      "failures": 1
+    }
   ],
   "flaky": [],
   "recentFailures": [
     {
-      "runId": "InsightsLogs_2026-03-12_11-53-27",
-      "when": "2026-03-12T11:54:11.997Z",
-      "project": "AbhilashGiridharan/InsightsLogs",
-      "suite": "SauceDemo E2E – Standard User",
-      "testId": "[FAIL] Cart count mismatch after adding 2 products",
-      "component": "Cart",
-      "rootCause": "Assertion Error",
-      "error": "expect(received).toBe(expected) — Expected: 3, Received: 2",
-      "suggestedFix": "Use await expect(locator).toHaveText() instead of synchronous assertion",
-      "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_11-53-27",
-      "reportUrl": ""
-    },
-    {
-      "runId": "InsightsLogs_2026-03-12_11-53-27",
-      "when": "2026-03-12T11:54:11.997Z",
-      "project": "AbhilashGiridharan/InsightsLogs",
-      "suite": "SauceDemo E2E – Standard User",
-      "testId": "[FAIL] Locked out user should reach inventory page",
-      "component": "Login / Auth",
-      "rootCause": "Auth / Access Denied",
-      "error": "expect(page).toHaveURL() failed — Expected: /inventory.html, Received: /",
-      "suggestedFix": "Assert on error banner visibility instead of URL redirect",
-      "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_11-53-27",
-      "reportUrl": ""
-    },
-    {
       "runId": "InsightsLogs_2026-03-12_11-44-12",
       "when": "2026-03-12T11:44:57.000Z",
       "project": "AbhilashGiridharan/InsightsLogs",
-      "suite": "SauceDemo E2E – Standard User",
+      "suite": "SauceDemo E2E \u2013 Standard User",
       "testId": "[FAIL] Cart count mismatch after adding 2 products",
       "component": "Cart",
       "rootCause": "Assertion Error",
-      "error": "expect(received).toBe(expected) — Expected: 3, Received: 2",
+      "error": "expect(received).toBe(expected) \u2014 Expected: 3, Received: 2",
       "suggestedFix": "Use await expect(locator).toHaveText() instead of synchronous assertion",
       "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_11-44-12",
       "reportUrl": ""
@@ -60,20 +49,46 @@
       "runId": "InsightsLogs_2026-03-12_11-44-12",
       "when": "2026-03-12T11:44:57.000Z",
       "project": "AbhilashGiridharan/InsightsLogs",
-      "suite": "SauceDemo E2E – Standard User",
+      "suite": "SauceDemo E2E \u2013 Standard User",
       "testId": "[FAIL] Locked out user should reach inventory page",
       "component": "Login / Auth",
       "rootCause": "Auth / Access Denied",
-      "error": "expect(page).toHaveURL() failed — Expected: /inventory.html, Received: /",
+      "error": "expect(page).toHaveURL() failed \u2014 Expected: /inventory.html, Received: /",
       "suggestedFix": "Assert on error banner visibility instead of URL redirect",
       "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_11-44-12",
+      "reportUrl": ""
+    },
+    {
+      "runId": "InsightsLogs_2026-03-12_11-53-27",
+      "when": "2026-03-12T11:54:11.997Z",
+      "project": "AbhilashGiridharan/InsightsLogs",
+      "suite": "SauceDemo E2E \u2013 Standard User",
+      "testId": "[FAIL] Cart count mismatch after adding 2 products",
+      "component": "Cart",
+      "rootCause": "Assertion Error",
+      "error": "expect(received).toBe(expected) \u2014 Expected: 3, Received: 2",
+      "suggestedFix": "Use await expect(locator).toHaveText() instead of synchronous assertion",
+      "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_11-53-27",
+      "reportUrl": ""
+    },
+    {
+      "runId": "InsightsLogs_2026-03-12_11-53-27",
+      "when": "2026-03-12T11:54:11.997Z",
+      "project": "AbhilashGiridharan/InsightsLogs",
+      "suite": "SauceDemo E2E \u2013 Standard User",
+      "testId": "[FAIL] Locked out user should reach inventory page",
+      "component": "Login / Auth",
+      "rootCause": "Auth / Access Denied",
+      "error": "expect(page).toHaveURL() failed \u2014 Expected: /inventory.html, Received: /",
+      "suggestedFix": "Assert on error banner visibility instead of URL redirect",
+      "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_11-53-27",
       "reportUrl": ""
     }
   ],
   "errorContext": [
     {
       "testId": "[FAIL] Cart count mismatch after adding 2 products",
-      "suite": "SauceDemo E2E – Standard User",
+      "suite": "SauceDemo E2E \u2013 Standard User",
       "errorType": "Assertion Error",
       "expected": "3",
       "received": "2",
@@ -85,7 +100,7 @@
     },
     {
       "testId": "[FAIL] Locked out user should reach inventory page",
-      "suite": "SauceDemo E2E – Standard User",
+      "suite": "SauceDemo E2E \u2013 Standard User",
       "errorType": "URL Assertion",
       "expected": "https://www.saucedemo.com/inventory.html",
       "received": "https://www.saucedemo.com/",
@@ -101,17 +116,21 @@
       "rootCause": "Assertion Error",
       "count": 2,
       "description": "Cart item count badge is not being updated after addToCart(). A synchronous assertion is reading a stale DOM value before React/the app has re-rendered the badge counter.",
-      "affectedTests": ["[FAIL] Cart count mismatch after adding 2 products"],
+      "affectedTests": [
+        "[FAIL] Cart count mismatch after adding 2 products"
+      ],
       "likelihood": "High",
-      "evidence": "Consistent Expected: 3 / Received: 2 across both runs — deterministic, not flaky. Difference is always exactly 1."
+      "evidence": "Consistent Expected: 3 / Received: 2 across both runs \u2014 deterministic, not flaky. Difference is always exactly 1."
     },
     {
       "rootCause": "Auth / Access Denied",
       "count": 2,
       "description": "The locked_out_user credential is intentionally blocked by SauceDemo. The test incorrectly asserts the user reaches /inventory.html, but the designed behavior is to remain on the login page with an error banner.",
-      "affectedTests": ["[FAIL] Locked out user should reach inventory page"],
+      "affectedTests": [
+        "[FAIL] Locked out user should reach inventory page"
+      ],
       "likelihood": "High",
-      "evidence": "URL always stays at '/' (login page) — SauceDemo's intended behavior for locked_out_user, not a transient environment issue."
+      "evidence": "URL always stays at '/' (login page) \u2014 SauceDemo's intended behavior for locked_out_user, not a transient environment issue."
     }
   ],
   "failureMapping": [
@@ -119,24 +138,28 @@
       "area": "Cart Module",
       "severity": "High",
       "failures": 2,
-      "affectedTests": ["[FAIL] Cart count mismatch after adding 2 products"],
+      "affectedTests": [
+        "[FAIL] Cart count mismatch after adding 2 products"
+      ],
       "description": "Cart badge counter fails to reflect the correct item count after addToCart(). This directly impacts the checkout flow validation and could indicate a real regression in cart state management."
     },
     {
       "area": "Auth / Login Module",
       "severity": "Medium",
       "failures": 2,
-      "affectedTests": ["[FAIL] Locked out user should reach inventory page"],
-      "description": "Test expectation is misaligned with the application's designed behavior for locked_out_user. SauceDemo intentionally blocks this user — the test must assert on the error state, not a success path."
+      "affectedTests": [
+        "[FAIL] Locked out user should reach inventory page"
+      ],
+      "description": "Test expectation is misaligned with the application's designed behavior for locked_out_user. SauceDemo intentionally blocks this user \u2014 the test must assert on the error state, not a success path."
     }
   ],
   "codeFixes": [
     {
       "testId": "[FAIL] Cart count mismatch after adding 2 products",
-      "issue": "Synchronous assertion on cart badge — reads stale DOM value before update",
+      "issue": "Synchronous assertion on cart badge \u2014 reads stale DOM value before update",
       "currentCode": "await page.click('[data-test=\"add-to-cart\"]');\nconst badge = await page.textContent('.shopping_cart_badge');\nexpect(badge).toBe('3');",
       "fixedCode": "await page.click('[data-test=\"add-to-cart\"]');\nawait expect(page.locator('.shopping_cart_badge')).toHaveText('3');",
-      "explanation": "Playwright's built-in await expect(...).toHaveText() automatically retries the assertion until the DOM updates or times out. A plain expect() with await textContent() grabs the value at a single instant — before the badge has updated — causing the count mismatch.",
+      "explanation": "Playwright's built-in await expect(...).toHaveText() automatically retries the assertion until the DOM updates or times out. A plain expect() with await textContent() grabs the value at a single instant \u2014 before the badge has updated \u2014 causing the count mismatch.",
       "priority": "P1"
     },
     {
@@ -159,7 +182,7 @@
     {
       "category": "Test Design",
       "title": "Align negative-path test expectations with app's designed error states",
-      "description": "Review all tests using locked_out_user, error_user, and invalid_user. Each should assert on the error banner or error state — not on success-path URLs or elements that will never appear.",
+      "description": "Review all tests using locked_out_user, error_user, and invalid_user. Each should assert on the error banner or error state \u2014 not on success-path URLs or elements that will never appear.",
       "effort": "Low",
       "impact": "High"
     },
@@ -180,11 +203,15 @@
   ],
   "impactAssessment": {
     "overallRisk": "High",
-    "affectedFeatures": ["Cart Management", "User Authentication", "Checkout Flow"],
+    "affectedFeatures": [
+      "Cart Management",
+      "User Authentication",
+      "Checkout Flow"
+    ],
     "testsBlocked": 2,
-    "estimatedFixTime": "1–2 hours",
-    "businessImpact": "The cart count mismatch could indicate a real regression in add-to-cart UX — a user adding 3 items seeing a badge of 2 would lose trust in the cart. The locked-out user failure generates false-negative CI alerts obscuring real failures.",
-    "regressionRisk": "Medium — same 2 tests failed identically across 2 consecutive runs (09:14 → 11:44 → 11:53), confirming a consistent deterministic defect rather than a transient environment issue."
+    "estimatedFixTime": "1\u20132 hours",
+    "businessImpact": "The cart count mismatch could indicate a real regression in add-to-cart UX \u2014 a user adding 3 items seeing a badge of 2 would lose trust in the cart. The locked-out user failure generates false-negative CI alerts obscuring real failures.",
+    "regressionRisk": "Medium \u2014 same 2 tests failed identically across 2 consecutive runs (09:14 \u2192 11:44 \u2192 11:53), confirming a consistent deterministic defect rather than a transient environment issue."
   },
   "actionItems": [
     {
@@ -204,7 +231,7 @@
     {
       "priority": "P2",
       "title": "Audit all negative-path tests for incorrect success assertions",
-      "description": "Review locked_out_user, error_user and invalid_user tests across the suite — ensure each asserts on designed error behavior",
+      "description": "Review locked_out_user, error_user and invalid_user tests across the suite \u2014 ensure each asserts on designed error behavior",
       "owner": "QE Lead",
       "status": "Open"
     },
