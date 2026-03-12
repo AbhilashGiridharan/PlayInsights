@@ -22,3 +22,4 @@ Thumbs.db
 .vscode/settings.json
 .idea/
 *.swp
+site/public/data

@@ -38,6 +38,7 @@ ChartJS.register(
 
 interface TrendChartsProps {
   runs: RunSummary[];
+  theme?: "dark" | "light";
 }
 
 const CHART_COLORS = {
@@ -48,32 +49,37 @@ const CHART_COLORS = {
   purple: "rgba(167,139,250,",
 };
 
-const BASE_CHART_OPTIONS = {
-  responsive: true,
-  maintainAspectRatio: true,
-  plugins: {
-    legend: {
-      labels: { color: "#9399b2", boxWidth: 12, padding: 16, font: { size: 12 } },
+function buildChartOptions(theme: "dark" | "light") {
+  const d = theme === "dark";
+  const tick  = d ? "#5c6080" : "#8890b0";
+  const grid  = d ? "rgba(46,49,80,0.6)" : "rgba(209,213,228,0.8)";
+  return {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        labels: { color: d ? "#9399b2" : "#4a5070", boxWidth: 12, padding: 16, font: { size: 12 } },
+      },
+      tooltip: {
+        backgroundColor: d ? "#1a1d27" : "#ffffff",
+        borderColor:     d ? "#2e3150" : "#d1d5e4",
+        borderWidth: 1,
+        titleColor: d ? "#e8eaf6" : "#1a1d2e",
+        bodyColor:  d ? "#9399b2" : "#4a5070",
+      },
     },
-    tooltip: {
-      backgroundColor: "#1a1d27",
-      borderColor: "#2e3150",
-      borderWidth: 1,
-      titleColor: "#e8eaf6",
-      bodyColor: "#9399b2",
+    scales: {
+      x: {
+        ticks: { color: tick, font: { size: 11 }, maxRotation: 45 },
+        grid:  { color: grid },
+      },
+      y: {
+        ticks: { color: tick, font: { size: 11 } },
+        grid:  { color: grid },
+      },
     },
-  },
-  scales: {
-    x: {
-      ticks: { color: "#5c6080", font: { size: 11 }, maxRotation: 45 },
-      grid: { color: "rgba(46,49,80,0.6)" },
-    },
-    y: {
-      ticks: { color: "#5c6080", font: { size: 11 } },
-      grid: { color: "rgba(46,49,80,0.6)" },
-    },
-  },
-};
+  };
+}
 
 function LoadingChart() {
   return (
@@ -84,7 +90,11 @@ function LoadingChart() {
   );
 }
 
-export function TrendCharts({ runs }: TrendChartsProps) {
+export function TrendCharts({ runs, theme = "dark" }: TrendChartsProps) {
+  const isDark = theme === "dark";
+  const tickColor = isDark ? "#5c6080" : "#8890b0";
+  const gridColor = isDark ? "rgba(46,49,80,0.6)" : "rgba(209,213,228,0.8)";
+  const chartOptions = buildChartOptions(theme);
   const recent = [...runs].slice(0, SPARKLINE_DAYS).reverse();
   const labels = recent.map((r) =>
     new Date(r.timestamp).toLocaleDateString("en-US", {
@@ -166,19 +176,19 @@ export function TrendCharts({ runs }: TrendChartsProps) {
   };
 
   const durationOptions = {
-    ...BASE_CHART_OPTIONS,
+    ...chartOptions,
     scales: {
-      ...BASE_CHART_OPTIONS.scales,
+      ...chartOptions.scales,
       y: {
-        ...BASE_CHART_OPTIONS.scales.y,
+        ...chartOptions.scales.y,
         position: "left" as const,
-        title: { display: true, text: "Total ms", color: "#5c6080", font: { size: 11 } },
+        title: { display: true, text: "Total ms", color: tickColor, font: { size: 11 } },
       },
       y1: {
         position: "right" as const,
-        ticks: { color: "#5c6080", font: { size: 11 } },
-        grid: { drawOnChartArea: false, color: "rgba(46,49,80,0.6)" },
-        title: { display: true, text: "Avg ms", color: "#5c6080", font: { size: 11 } },
+        ticks: { color: tickColor, font: { size: 11 } },
+        grid: { drawOnChartArea: false, color: gridColor },
+        title: { display: true, text: "Avg ms", color: tickColor, font: { size: 11 } },
       },
     },
   };
@@ -203,15 +213,15 @@ export function TrendCharts({ runs }: TrendChartsProps) {
   };
 
   const passRateOptions = {
-    ...BASE_CHART_OPTIONS,
+    ...chartOptions,
     scales: {
-      ...BASE_CHART_OPTIONS.scales,
+      ...chartOptions.scales,
       y: {
-        ...BASE_CHART_OPTIONS.scales.y,
+        ...chartOptions.scales.y,
         min: 0,
         max: 100,
         ticks: {
-          ...BASE_CHART_OPTIONS.scales.y.ticks,
+          ...chartOptions.scales.y.ticks,
           callback: (v: number | string) => `${v}%`,
         },
       },
@@ -223,7 +233,7 @@ export function TrendCharts({ runs }: TrendChartsProps) {
       <div className="chart-panel">
         <h3>Results Trend (last {SPARKLINE_DAYS} runs)</h3>
         <Suspense fallback={<LoadingChart />}>
-          <Line data={resultsTrendData} options={BASE_CHART_OPTIONS as never} />
+          <Line data={resultsTrendData} options={chartOptions as never} />
         </Suspense>
       </div>
 

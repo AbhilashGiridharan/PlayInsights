@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { useData } from "./hooks/useData";
+import { useTheme } from "./hooks/useTheme";
 import { SummaryCards } from "./components/SummaryCards";
 import { STALE_THRESHOLD_MS } from "./config";
 
@@ -40,6 +41,8 @@ function App() {
     refresh,
   } = useData();
 
+  const { theme, toggleTheme } = useTheme();
+
   const staleWarning =
     latest &&
     !isStale &&
@@ -69,6 +72,14 @@ function App() {
             />
             Auto-refresh
           </label>
+          <button
+            className="btn btn-sm btn-icon"
+            onClick={toggleTheme}
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
           <button className="btn btn-primary btn-sm" onClick={refresh} disabled={loading}>
             {loading ? "Loading…" : "↺ Refresh"}
           </button>
@@ -116,7 +127,7 @@ function App() {
               <>
                 <div className="section-title">Trends</div>
                 <Suspense fallback={<LoadingSpinner />}>
-                  <TrendCharts runs={runs} />
+                  <TrendCharts runs={runs} theme={theme} />
                 </Suspense>
               </>
             )}

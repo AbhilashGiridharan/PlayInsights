@@ -1,4 +1,4 @@
-name: 🎭 Test → Summarize → Publish
+name: 📊 Ingest → Publish
 
 on:
   push:
@@ -19,54 +19,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-# ── 1. Run Playwright tests ───────────────────────────────────────────────────
-  test:
-    name: 🧪 Playwright Tests
+# ── 1. Ingest reports & commit data ───────────────────────────────────────────
+  ingest-and-commit:
+    name: 📊 Ingest & Commit Data
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      - name: Install root dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
-      - name: Run tests
-        run: npm run test
-        continue-on-error: true        # record failures without blocking deploy
-        env:
-          CI: "true"
-
-      - name: Upload HTML report artifact
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: playwright-html-report
-          path: playwright-report/
-          retention-days: 30
-
-      - name: Upload JSON report artifact
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: playwright-json-report
-          path: playwright-report/results.json
-          retention-days: 30
-
-# ── 2. Summarize results & commit data ────────────────────────────────────────
-  summarize-and-commit:
-    name: 📊 Summarize & Commit Data
-    runs-on: ubuntu-latest
-    needs: test
-    if: always() && github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -83,22 +40,6 @@ jobs:
       - name: Install root dependencies
         run: npm ci
 
-      - name: Download JSON report artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: playwright-json-report
-          path: playwright-report/
-
-      - name: Generate run summary
-        run: npm run summarize
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-          GITHUB_REF_NAME: ${{ github.ref_name }}
-          GITHUB_RUN_ID: ${{ github.run_id }}
-          GITHUB_SERVER_URL: ${{ github.server_url }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_ACTOR: ${{ github.actor }}
-
       - name: Ingest external reports (InsightsLogs)
         run: npm run ingest
         env:
@@ -113,17 +54,17 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/
           git diff --staged --quiet && echo "No data changes." || \
-            git commit -m "chore(data): add results for ${GITHUB_SHA:0:8} [skip ci]"
+            git commit -m "chore(data): ingest reports for ${GITHUB_SHA:0:8} [skip ci]"
           git pull --rebase origin main
           git push origin main
         env:
           GITHUB_SHA: ${{ github.sha }}
 
-# ── 3. Build site & deploy to GitHub Pages ────────────────────────────────────
+# ── 2. Build site & deploy to GitHub Pages ────────────────────────────────────
   build-and-deploy-pages:
     name: 🚀 Build & Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    needs: summarize-and-commit
+    needs: ingest-and-commit
     if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     environment:
       name: github-pages

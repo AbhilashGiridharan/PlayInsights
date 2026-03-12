@@ -25,6 +25,37 @@
   --radius-lg:     14px;
   --shadow:        0 2px 12px rgba(0,0,0,0.4);
   --font-mono:     'JetBrains Mono', 'Fira Mono', 'Consolas', monospace;
+  /* Button theme tokens */
+  --btn-hover-bg:      #2e3150;
+  --btn-hover-border:  #3d4270;
+  --btn-primary-bg:    #3d4270;
+  --btn-primary-hover: #4a518a;
+}
+
+/* ── Light theme ──────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg-base:        #f5f7fb;
+  --bg-surface:     #ffffff;
+  --bg-elevated:    #eef1f7;
+  --border:         #d1d5e4;
+  --text-primary:   #1a1d2e;
+  --text-secondary: #4a5070;
+  --text-muted:     #8890b0;
+  --shadow:         0 2px 12px rgba(0,0,0,0.08);
+  --accent-green:   #16a34a;
+  --accent-red:     #dc2626;
+  --accent-yellow:  #d97706;
+  --accent-blue:    #2563eb;
+  --accent-purple:  #7c3aed;
+  --accent-teal:    #0d9488;
+  --btn-hover-bg:      #e4e7f5;
+  --btn-hover-border:  #c5cce0;
+  --btn-primary-bg:    #7c3aed;
+  --btn-primary-hover: #6d28d9;
+}
+
+html {
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 html, body {
@@ -324,14 +355,15 @@ tbody td {
   color: var(--text-primary);
   transition: background 0.15s, border-color 0.15s;
 }
-.btn:hover { background: #2e3150; border-color: #3d4270; }
+.btn:hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); }
 .btn-primary {
-  background: #3d4270;
+  background: var(--btn-primary-bg);
   border-color: var(--accent-purple);
-  color: var(--text-primary);
+  color: #ffffff;
 }
-.btn-primary:hover { background: #4a518a; }
+.btn-primary:hover { background: var(--btn-primary-hover); }
 .btn-sm { padding: 4px 10px; font-size: 12px; }
+.btn-icon { padding: 4px 9px; font-size: 15px; line-height: 1; }
 
 .toggle-label {
   display: flex;
@@ -408,4 +440,16 @@ tbody td {
   font-size: 12px;
   color: var(--text-muted);
   border-top: 1px solid var(--border);
+}
+
+/* ── Light theme surface overrides ───────────────────────── */
+[data-theme="light"] .badge-green  { background: rgba(22,163,74,0.12); }
+[data-theme="light"] .badge-red    { background: rgba(220,38,38,0.12); }
+[data-theme="light"] .badge-yellow { background: rgba(217,119,6,0.12); }
+[data-theme="light"] .badge-blue   { background: rgba(37,99,235,0.12); }
+[data-theme="light"] .badge-purple { background: rgba(124,58,237,0.12); color: #7c3aed; }
+[data-theme="light"] .badge-gray   { background: rgba(74,85,112,0.12); }
+[data-theme="light"] .skeleton {
+  background: linear-gradient(90deg, var(--bg-surface) 25%, var(--bg-elevated) 50%, var(--bg-surface) 75%);
+  background-size: 200% 100%;
 }
