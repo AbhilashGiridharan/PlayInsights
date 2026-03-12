@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-03-12T09:15:00Z",
+  "coverage": {
+    "totalTests": 48,
+    "executed": 6
+  },
+  "summary": {
+    "failures": 0,
+    "failureRate": 0.0,
+    "newFailures": 0,
+    "flakyTests": 0,
+    "meanTimeToFixHrs": 0
+  },
+  "rootCauses": [
+    { "type": "Locator/Wait", "count": 0 },
+    { "type": "App Bug",      "count": 0 },
+    { "type": "Env/Infra",   "count": 0 },
+    { "type": "Data/Fixture", "count": 0 }
+  ],
+  "byComponent": [
+    { "name": "Login",    "failures": 0 },
+    { "name": "Checkout", "failures": 0 },
+    { "name": "Cart",     "failures": 0 }
+  ],
+  "flaky": [],
+  "recentFailures": []
+}

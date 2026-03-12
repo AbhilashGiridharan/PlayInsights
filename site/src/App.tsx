@@ -3,7 +3,8 @@ import { useData } from "./hooks/useData";
 import { useTheme } from "./hooks/useTheme";
 import { SummaryCards } from "./components/SummaryCards";
 import { DailySummary } from "./components/DailySummary";
-import { STALE_THRESHOLD_MS } from "./config";
+import { FailureAnalyticsSection } from "./components/FailureAnalyticsSection";
+import { STALE_THRESHOLD_MS, DATA_BASE } from "./config";
 
 // Code-split heavy chart components
 const TrendCharts = lazy(() =>
@@ -149,6 +150,10 @@ function App() {
             <Suspense fallback={<LoadingSpinner />}>
               <RunsTable runs={runs} />
             </Suspense>
+
+            {/* Failure Analysis */}
+            <div className="section-title">Failure Analysis</div>
+            <FailureAnalyticsSection dataUrl={`${DATA_BASE}/analysis.json`} maxItems={20} />
           </>
         )}
       </main>

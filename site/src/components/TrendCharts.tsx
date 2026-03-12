@@ -91,9 +91,6 @@ function LoadingChart() {
 }
 
 export function TrendCharts({ runs, theme = "dark" }: TrendChartsProps) {
-  const isDark = theme === "dark";
-  const tickColor = isDark ? "#5c6080" : "#8890b0";
-  const gridColor = isDark ? "rgba(46,49,80,0.6)" : "rgba(209,213,228,0.8)";
   const chartOptions = buildChartOptions(theme);
   const recent = [...runs].slice(0, SPARKLINE_DAYS).reverse();
   const labels = recent.map((r) =>
@@ -148,51 +145,6 @@ export function TrendCharts({ runs, theme = "dark" }: TrendChartsProps) {
     ],
   };
 
-  // ── Duration trend ───────────────────────────────────────────────────────
-  const durationTrendData = {
-    labels,
-    datasets: [
-      {
-        label: "Total (ms)",
-        data: recent.map((r) => r.durations.totalMs),
-        borderColor: `${CHART_COLORS.blue}1)`,
-        backgroundColor: `${CHART_COLORS.blue}0.15)`,
-        fill: true,
-        tension: 0.4,
-        pointRadius: 3,
-        yAxisID: "y",
-      },
-      {
-        label: "Avg per test (ms)",
-        data: recent.map((r) => r.durations.avgTestMs),
-        borderColor: `${CHART_COLORS.purple}1)`,
-        backgroundColor: "transparent",
-        fill: false,
-        tension: 0.4,
-        pointRadius: 3,
-        yAxisID: "y1",
-      },
-    ],
-  };
-
-  const durationOptions = {
-    ...chartOptions,
-    scales: {
-      ...chartOptions.scales,
-      y: {
-        ...chartOptions.scales.y,
-        position: "left" as const,
-        title: { display: true, text: "Total ms", color: tickColor, font: { size: 11 } },
-      },
-      y1: {
-        position: "right" as const,
-        ticks: { color: tickColor, font: { size: 11 } },
-        grid: { drawOnChartArea: false, color: gridColor },
-        title: { display: true, text: "Avg ms", color: tickColor, font: { size: 11 } },
-      },
-    },
-  };
-
   // ── Pass rate trend (bar) ────────────────────────────────────────────────
   const passRateData = {
     labels,
@@ -241,15 +193,6 @@ export function TrendCharts({ runs, theme = "dark" }: TrendChartsProps) {
         <h3>Pass Rate % (last {SPARKLINE_DAYS} runs)</h3>
         <Suspense fallback={<LoadingChart />}>
           <Bar data={passRateData} options={passRateOptions as never} />
-        </Suspense>
-      </div>
-
-      <div className="chart-panel" style={{ gridColumn: "1 / -1" }}>
-        <h3>Duration Trend (last {SPARKLINE_DAYS} runs)</h3>
-        <Suspense fallback={<LoadingChart />}>
-          <div style={{ maxHeight: 220, position: "relative" }}>
-            <Line data={durationTrendData} options={{ ...durationOptions, maintainAspectRatio: false } as never} />
-          </div>
         </Suspense>
       </div>
     </div>
