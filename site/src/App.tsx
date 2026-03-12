@@ -127,13 +127,13 @@ function App() {
                 <SummaryCards runs={runs} latest={latest} />
               </div>
               <div className="overview-aside">
-                <div className="aside-header">
-                  <span>📅</span>
-                  <span>Summary of the Day</span>
-                </div>
                 <DailySummary runs={runs} />
               </div>
             </div>
+
+            {/* Failure Analysis */}
+            <div className="section-title">Failure Analysis</div>
+            <FailureAnalyticsSection dataUrl={`${DATA_BASE}/analysis.json`} />
 
             {/* Charts */}
             {runs.length > 0 && (
@@ -150,10 +150,6 @@ function App() {
             <Suspense fallback={<LoadingSpinner />}>
               <RunsTable runs={runs} />
             </Suspense>
-
-            {/* Failure Analysis */}
-            <div className="section-title">Failure Analysis</div>
-            <FailureAnalyticsSection dataUrl={`${DATA_BASE}/analysis.json`} maxItems={20} />
           </>
         )}
       </main>

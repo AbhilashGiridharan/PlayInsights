@@ -151,7 +151,7 @@ export function SummaryCards({ runs, latest }: SummaryCardsProps) {
   return (
     <>
       {/* Quality Score Banner */}
-      <div className="card quality-score-card" style={{ marginBottom: 16, borderLeft: `4px solid ${qs.color}` }}>
+      <div className="card quality-score-card" style={{ borderLeft: `4px solid ${qs.color}` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
           <QualityRing score={qs.score} color={qs.color} />
           <div style={{ flex: 1 }}>

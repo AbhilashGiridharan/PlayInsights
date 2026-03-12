@@ -1,27 +1,226 @@
 {
-  "generatedAt": "2026-03-12T09:15:00Z",
-  "coverage": {
-    "totalTests": 48,
-    "executed": 6
-  },
+  "generatedAt": "2026-03-12T12:00:00.000Z",
+  "coverage": { "totalTests": 22, "executed": 22 },
   "summary": {
-    "failures": 0,
-    "failureRate": 0.0,
-    "newFailures": 0,
-    "flakyTests": 0,
-    "meanTimeToFixHrs": 0
+    "failures": 4,
+    "failureRate": 18.18,
+    "newFailures": 2,
+    "flakyTests": 0
   },
   "rootCauses": [
-    { "type": "Locator/Wait", "count": 0 },
-    { "type": "App Bug",      "count": 0 },
-    { "type": "Env/Infra",   "count": 0 },
-    { "type": "Data/Fixture", "count": 0 }
+    { "type": "Assertion Error",      "count": 2 },
+    { "type": "Auth / Access Denied", "count": 2 }
   ],
   "byComponent": [
-    { "name": "Login",    "failures": 0 },
-    { "name": "Checkout", "failures": 0 },
-    { "name": "Cart",     "failures": 0 }
+    { "name": "Cart",         "failures": 2 },
+    { "name": "Login / Auth", "failures": 2 }
   ],
   "flaky": [],
-  "recentFailures": []
+  "recentFailures": [
+    {
+      "runId": "InsightsLogs_2026-03-12_11-53-27",
+      "when": "2026-03-12T11:54:11.997Z",
+      "project": "AbhilashGiridharan/InsightsLogs",
+      "suite": "SauceDemo E2E – Standard User",
+      "testId": "[FAIL] Cart count mismatch after adding 2 products",
+      "component": "Cart",
+      "rootCause": "Assertion Error",
+      "error": "expect(received).toBe(expected) — Expected: 3, Received: 2",
+      "suggestedFix": "Use await expect(locator).toHaveText() instead of synchronous assertion",
+      "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_11-53-27",
+      "reportUrl": ""
+    },
+    {
+      "runId": "InsightsLogs_2026-03-12_11-53-27",
+      "when": "2026-03-12T11:54:11.997Z",
+      "project": "AbhilashGiridharan/InsightsLogs",
+      "suite": "SauceDemo E2E – Standard User",
+      "testId": "[FAIL] Locked out user should reach inventory page",
+      "component": "Login / Auth",
+      "rootCause": "Auth / Access Denied",
+      "error": "expect(page).toHaveURL() failed — Expected: /inventory.html, Received: /",
+      "suggestedFix": "Assert on error banner visibility instead of URL redirect",
+      "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_11-53-27",
+      "reportUrl": ""
+    },
+    {
+      "runId": "InsightsLogs_2026-03-12_11-44-12",
+      "when": "2026-03-12T11:44:57.000Z",
+      "project": "AbhilashGiridharan/InsightsLogs",
+      "suite": "SauceDemo E2E – Standard User",
+      "testId": "[FAIL] Cart count mismatch after adding 2 products",
+      "component": "Cart",
+      "rootCause": "Assertion Error",
+      "error": "expect(received).toBe(expected) — Expected: 3, Received: 2",
+      "suggestedFix": "Use await expect(locator).toHaveText() instead of synchronous assertion",
+      "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_11-44-12",
+      "reportUrl": ""
+    },
+    {
+      "runId": "InsightsLogs_2026-03-12_11-44-12",
+      "when": "2026-03-12T11:44:57.000Z",
+      "project": "AbhilashGiridharan/InsightsLogs",
+      "suite": "SauceDemo E2E – Standard User",
+      "testId": "[FAIL] Locked out user should reach inventory page",
+      "component": "Login / Auth",
+      "rootCause": "Auth / Access Denied",
+      "error": "expect(page).toHaveURL() failed — Expected: /inventory.html, Received: /",
+      "suggestedFix": "Assert on error banner visibility instead of URL redirect",
+      "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_11-44-12",
+      "reportUrl": ""
+    }
+  ],
+  "errorContext": [
+    {
+      "testId": "[FAIL] Cart count mismatch after adding 2 products",
+      "suite": "SauceDemo E2E – Standard User",
+      "errorType": "Assertion Error",
+      "expected": "3",
+      "received": "2",
+      "failedStep": "Then the cart badge should show 3 items",
+      "file": "cart.spec.ts",
+      "occurrences": 2,
+      "firstSeen": "2026-03-12T11:44:57.000Z",
+      "lastSeen": "2026-03-12T11:54:11.997Z"
+    },
+    {
+      "testId": "[FAIL] Locked out user should reach inventory page",
+      "suite": "SauceDemo E2E – Standard User",
+      "errorType": "URL Assertion",
+      "expected": "https://www.saucedemo.com/inventory.html",
+      "received": "https://www.saucedemo.com/",
+      "failedStep": "Then the user should be on the inventory page",
+      "file": "auth.spec.ts",
+      "occurrences": 2,
+      "firstSeen": "2026-03-12T11:44:57.000Z",
+      "lastSeen": "2026-03-12T11:54:11.997Z"
+    }
+  ],
+  "rca": [
+    {
+      "rootCause": "Assertion Error",
+      "count": 2,
+      "description": "Cart item count badge is not being updated after addToCart(). A synchronous assertion is reading a stale DOM value before React/the app has re-rendered the badge counter.",
+      "affectedTests": ["[FAIL] Cart count mismatch after adding 2 products"],
+      "likelihood": "High",
+      "evidence": "Consistent Expected: 3 / Received: 2 across both runs — deterministic, not flaky. Difference is always exactly 1."
+    },
+    {
+      "rootCause": "Auth / Access Denied",
+      "count": 2,
+      "description": "The locked_out_user credential is intentionally blocked by SauceDemo. The test incorrectly asserts the user reaches /inventory.html, but the designed behavior is to remain on the login page with an error banner.",
+      "affectedTests": ["[FAIL] Locked out user should reach inventory page"],
+      "likelihood": "High",
+      "evidence": "URL always stays at '/' (login page) — SauceDemo's intended behavior for locked_out_user, not a transient environment issue."
+    }
+  ],
+  "failureMapping": [
+    {
+      "area": "Cart Module",
+      "severity": "High",
+      "failures": 2,
+      "affectedTests": ["[FAIL] Cart count mismatch after adding 2 products"],
+      "description": "Cart badge counter fails to reflect the correct item count after addToCart(). This directly impacts the checkout flow validation and could indicate a real regression in cart state management."
+    },
+    {
+      "area": "Auth / Login Module",
+      "severity": "Medium",
+      "failures": 2,
+      "affectedTests": ["[FAIL] Locked out user should reach inventory page"],
+      "description": "Test expectation is misaligned with the application's designed behavior for locked_out_user. SauceDemo intentionally blocks this user — the test must assert on the error state, not a success path."
+    }
+  ],
+  "codeFixes": [
+    {
+      "testId": "[FAIL] Cart count mismatch after adding 2 products",
+      "issue": "Synchronous assertion on cart badge — reads stale DOM value before update",
+      "currentCode": "await page.click('[data-test=\"add-to-cart\"]');\nconst badge = await page.textContent('.shopping_cart_badge');\nexpect(badge).toBe('3');",
+      "fixedCode": "await page.click('[data-test=\"add-to-cart\"]');\nawait expect(page.locator('.shopping_cart_badge')).toHaveText('3');",
+      "explanation": "Playwright's built-in await expect(...).toHaveText() automatically retries the assertion until the DOM updates or times out. A plain expect() with await textContent() grabs the value at a single instant — before the badge has updated — causing the count mismatch.",
+      "priority": "P1"
+    },
+    {
+      "testId": "[FAIL] Locked out user should reach inventory page",
+      "issue": "Test asserts a URL that SauceDemo will never serve to a locked-out user",
+      "currentCode": "await loginPage.login('locked_out_user', 'secret_sauce');\nawait expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');",
+      "fixedCode": "await loginPage.login('locked_out_user', 'secret_sauce');\nawait expect(page.locator('[data-test=\"error-button\"]')).toBeVisible();\nawait expect(page.locator('[data-test=\"error-button\"]')).toContainText('locked out');",
+      "explanation": "SauceDemo intentionally redirects locked_out_user back to the login page with an error banner. The fix aligns the assertion with the application's designed behavior: verify the error message is shown rather than expecting a success navigation.",
+      "priority": "P1"
+    }
+  ],
+  "suggestedImprovements": [
+    {
+      "category": "Test Reliability",
+      "title": "Replace all synchronous assertions with Playwright auto-retry expects",
+      "description": "Audit the full suite for any expect(await element.textContent()) patterns. Replace with await expect(locator).toHaveText() / .toHaveURL() / .toBeVisible() to eliminate timing-related failures.",
+      "effort": "Low",
+      "impact": "High"
+    },
+    {
+      "category": "Test Design",
+      "title": "Align negative-path test expectations with app's designed error states",
+      "description": "Review all tests using locked_out_user, error_user, and invalid_user. Each should assert on the error banner or error state — not on success-path URLs or elements that will never appear.",
+      "effort": "Low",
+      "impact": "High"
+    },
+    {
+      "category": "Coverage",
+      "title": "Add step-level cart state verification",
+      "description": "Add granular assertions after each individual addToCart() call to isolate which product or step triggers the count mismatch, rather than only asserting the final total.",
+      "effort": "Medium",
+      "impact": "Medium"
+    },
+    {
+      "category": "CI Stability",
+      "title": "Enable Playwright retries for CI runs",
+      "description": "Set retries: 2 in playwright.config.ts. This catches genuine flakiness vs consistent defects, and prevents single transient failures from blocking the pipeline.",
+      "effort": "Low",
+      "impact": "Medium"
+    }
+  ],
+  "impactAssessment": {
+    "overallRisk": "High",
+    "affectedFeatures": ["Cart Management", "User Authentication", "Checkout Flow"],
+    "testsBlocked": 2,
+    "estimatedFixTime": "1–2 hours",
+    "businessImpact": "The cart count mismatch could indicate a real regression in add-to-cart UX — a user adding 3 items seeing a badge of 2 would lose trust in the cart. The locked-out user failure generates false-negative CI alerts obscuring real failures.",
+    "regressionRisk": "Medium — same 2 tests failed identically across 2 consecutive runs (09:14 → 11:44 → 11:53), confirming a consistent deterministic defect rather than a transient environment issue."
+  },
+  "actionItems": [
+    {
+      "priority": "P1",
+      "title": "Fix cart badge assertion to use toHaveText()",
+      "description": "Replace synchronous cart count assertion with Playwright's auto-retrying locator assertion in cart.spec.ts",
+      "owner": "QE Team",
+      "status": "Open"
+    },
+    {
+      "priority": "P1",
+      "title": "Fix locked-out user test to assert on error banner",
+      "description": "Replace toHaveURL('/inventory.html') with toBeVisible() + toContainText('locked out') on the SauceDemo error banner element",
+      "owner": "QE Team",
+      "status": "Open"
+    },
+    {
+      "priority": "P2",
+      "title": "Audit all negative-path tests for incorrect success assertions",
+      "description": "Review locked_out_user, error_user and invalid_user tests across the suite — ensure each asserts on designed error behavior",
+      "owner": "QE Lead",
+      "status": "Open"
+    },
+    {
+      "priority": "P2",
+      "title": "Enable Playwright retries: 2 in CI configuration",
+      "description": "Add retries: 2 to playwright.config.ts to differentiate flaky from consistently failing tests and improve pipeline stability",
+      "owner": "QE / DevOps",
+      "status": "Open"
+    },
+    {
+      "priority": "P3",
+      "title": "Add per-step cart state assertions",
+      "description": "Add badge count checks after each individual addToCart() call to precisely locate the step where the count diverges from expected",
+      "owner": "QE Team",
+      "status": "Open"
+    }
+  ]
 }

@@ -74,10 +74,14 @@ export function DailySummary({ runs }: DailySummaryProps) {
 
   return (
     <div className="daily-list">
-      <div className="daily-list-date">
-        {isToday
-          ? `as of ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
-          : `Most recent data · ${dayLabel}`}
+      <div className="daily-list-header">
+        <span className="daily-list-header-icon">&#128197;</span>
+        <span className="daily-list-header-title">Summary of the Day</span>
+        <span className="daily-list-header-time">
+          {isToday
+            ? `as of ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+            : dayLabel}
+        </span>
       </div>
       {stats.map((s) => (
         <div key={s.label} className="daily-list-row">
