@@ -25,6 +25,8 @@ export interface RunSummary {
   commit: string;
   author: string;
   ciUrl: string;
+  /** Origin repo – e.g. "InsightsLogs" for external runs, absent for local Playwright runs */
+  source?: string;
   totals: {
     passed: number;
     failed: number;

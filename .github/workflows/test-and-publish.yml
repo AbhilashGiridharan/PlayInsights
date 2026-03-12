@@ -99,6 +99,11 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_ACTOR: ${{ github.actor }}
 
+      - name: Ingest external reports (InsightsLogs)
+        run: npm run ingest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Rebuild data index
         run: npm run update:index
 

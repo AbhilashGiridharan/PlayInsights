@@ -1,0 +1,38 @@
+{
+  "runId": "InsightsLogs_2026-03-12_09-14-52",
+  "timestamp": "2026-03-12T09:15:22.341Z",
+  "branch": "main",
+  "commit": "428033d80dca859c893338c32ab410467350d139",
+  "author": "AbhilashGiridharan",
+  "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-03-12_09-14-52",
+  "source": "InsightsLogs",
+  "totals": {
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "durations": {
+    "totalMs": 25362,
+    "avgTestMs": 4227,
+    "p95TestMs": 5539
+  },
+  "passRate": 100,
+  "suites": [
+    {
+      "name": "SauceDemo E2E – Standard User",
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 25362
+    }
+  ],
+  "projects": [
+    {
+      "name": "AbhilashGiridharan/InsightsLogs",
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0
+    }
+  ]
+}

@@ -38,6 +38,7 @@ export function RunsTable({ runs }: RunsTableProps) {
   const [suite, setSuite] = useState("All");
   const [status, setStatus] = useState("All");
   const [branch, setBranch] = useState("All");
+  const [source, setSource] = useState("All");
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("timestamp");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
@@ -61,6 +62,11 @@ export function RunsTable({ runs }: RunsTableProps) {
     return ["All", ...Array.from(set).sort()];
   }, [runs]);
 
+  const allSources = useMemo(() => {
+    const set = new Set<string>(runs.map((r) => r.source ?? "InsightsDemo"));
+    return ["All", ...Array.from(set).sort()];
+  }, [runs]);
+
   // Filter
   const filtered = useMemo(() => {
     return runs.filter((r) => {
@@ -70,10 +76,11 @@ export function RunsTable({ runs }: RunsTableProps) {
       if (status === "Pass" && r.totals.failed > 0) return false;
       if (status === "Fail" && r.totals.failed === 0) return false;
       if (status === "Flaky" && r.totals.flaky === 0) return false;
+      if (source !== "All" && (r.source ?? "InsightsDemo") !== source) return false;
       if (search && !r.commit.includes(search) && !r.author.includes(search) && !r.runId.includes(search)) return false;
       return true;
     });
-  }, [runs, project, suite, branch, status, search]);
+  }, [runs, project, suite, branch, status, source, search]);
 
   // Sort
   const sorted = useMemo(() => {
@@ -140,6 +147,12 @@ export function RunsTable({ runs }: RunsTableProps) {
           </select>
         </div>
         <div className="filter-group">
+          <label>Source</label>
+          <select value={source} onChange={(e) => { setSource(e.target.value); setPage(1); }}>
+            {allSources.map((s) => <option key={s}>{s}</option>)}
+          </select>
+        </div>
+        <div className="filter-group">
           <label>Search</label>
           <input
             type="text"
@@ -156,6 +169,7 @@ export function RunsTable({ runs }: RunsTableProps) {
           <thead>
             <tr>
               <th onClick={() => handleSort("timestamp")}>Timestamp{sortIcon("timestamp")}</th>
+              <th>Source</th>
               <th>Branch</th>
               <th>Commit</th>
               <th>Author</th>
@@ -172,7 +186,7 @@ export function RunsTable({ runs }: RunsTableProps) {
           <tbody>
             {paginated.length === 0 && (
               <tr>
-                <td colSpan={12} style={{ textAlign: "center", padding: 32, color: "var(--text-muted)" }}>
+                <td colSpan={13} style={{ textAlign: "center", padding: 32, color: "var(--text-muted)" }}>
                   No runs match the current filters.
                 </td>
               </tr>
@@ -184,6 +198,11 @@ export function RunsTable({ runs }: RunsTableProps) {
                     month: "short", day: "numeric",
                     hour: "2-digit", minute: "2-digit",
                   })}
+                </td>
+                <td>
+                  <span className={run.source ? "badge badge-purple" : "badge badge-gray"}>
+                    {run.source ?? "InsightsDemo"}
+                  </span>
                 </td>
                 <td>
                   <span className="badge badge-blue">{run.branch}</span>
