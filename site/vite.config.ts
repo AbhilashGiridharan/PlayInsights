@@ -4,9 +4,9 @@ import react from "@vitejs/plugin-react";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  // In production (GitHub Pages) the site lives at /InsightsDemo/
+  // In production (GitHub Pages) the site lives at /PlayInsights/
   // In dev the Vite dev-server serves from /
-  base: mode === "production" ? "/InsightsDemo/" : "/",
+  base: mode === "production" ? "/PlayInsights/" : "/",
   build: {
     outDir: "dist",
     rollupOptions: {

@@ -16,8 +16,8 @@
  */
 
 // ── Owner / repo / branch – edit these after forking ────────────────────────
-export const GITHUB_OWNER = "QE-CoE";
-export const GITHUB_REPO = "InsightsDemo";
+export const GITHUB_OWNER = "AbhilashGiridharan";
+export const GITHUB_REPO = "PlayInsights";
 export const GITHUB_BRANCH = "main";
 
 // ── Data base URL ────────────────────────────────────────────────────────────
