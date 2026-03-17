@@ -37,8 +37,8 @@ export function RunsTable({ runs }: RunsTableProps) {
   const [project, setProject] = useState("All");
   const [suite, setSuite] = useState("All");
   const [status, setStatus] = useState("All");
-  const [branch, setBranch] = useState("All");
-  const [source, setSource] = useState("All");
+  const [os, setOs] = useState("All");
+  const [browser, setBrowser] = useState("All");
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("timestamp");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
@@ -57,13 +57,21 @@ export function RunsTable({ runs }: RunsTableProps) {
     return ["All", ...Array.from(set).sort()];
   }, [runs]);
 
-  const allBranches = useMemo(() => {
-    const set = new Set<string>(runs.map((r) => r.branch));
+  const allOs = useMemo(() => {
+    const set = new Set<string>();
+    runs.forEach((r) => {
+      const v = r.environment?.os;
+      if (v) set.add(v);
+    });
     return ["All", ...Array.from(set).sort()];
   }, [runs]);
 
-  const allSources = useMemo(() => {
-    const set = new Set<string>(runs.map((r) => r.source ?? "InsightsDemo"));
+  const allBrowsers = useMemo(() => {
+    const set = new Set<string>();
+    runs.forEach((r) => {
+      const v = r.environment?.browser;
+      if (v) set.add(v);
+    });
     return ["All", ...Array.from(set).sort()];
   }, [runs]);
 
@@ -72,15 +80,15 @@ export function RunsTable({ runs }: RunsTableProps) {
     return runs.filter((r) => {
       if (project !== "All" && !r.projects.some((p) => p.name === project)) return false;
       if (suite !== "All" && !r.suites.some((s) => s.name === suite)) return false;
-      if (branch !== "All" && r.branch !== branch) return false;
       if (status === "Pass" && r.totals.failed > 0) return false;
       if (status === "Fail" && r.totals.failed === 0) return false;
       if (status === "Flaky" && r.totals.flaky === 0) return false;
-      if (source !== "All" && (r.source ?? "InsightsDemo") !== source) return false;
-      if (search && !r.commit.includes(search) && !r.author.includes(search) && !r.runId.includes(search)) return false;
+      if (os !== "All" && r.environment?.os !== os) return false;
+      if (browser !== "All" && r.environment?.browser !== browser) return false;
+      if (search && !r.author.includes(search) && !r.runId.includes(search)) return false;
       return true;
     });
-  }, [runs, project, suite, branch, status, source, search]);
+  }, [runs, project, suite, status, os, browser, search]);
 
   // Sort
   const sorted = useMemo(() => {
@@ -135,28 +143,28 @@ export function RunsTable({ runs }: RunsTableProps) {
           </select>
         </div>
         <div className="filter-group">
-          <label>Branch</label>
-          <select value={branch} onChange={(e) => { setBranch(e.target.value); setPage(1); }}>
-            {allBranches.map((b) => <option key={b}>{b}</option>)}
-          </select>
-        </div>
-        <div className="filter-group">
           <label>Status</label>
           <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
             {["All", "Pass", "Fail", "Flaky"].map((s) => <option key={s}>{s}</option>)}
           </select>
         </div>
         <div className="filter-group">
-          <label>Source</label>
-          <select value={source} onChange={(e) => { setSource(e.target.value); setPage(1); }}>
-            {allSources.map((s) => <option key={s}>{s}</option>)}
+          <label>OS</label>
+          <select value={os} onChange={(e) => { setOs(e.target.value); setPage(1); }}>
+            {allOs.map((o) => <option key={o}>{o}</option>)}
+          </select>
+        </div>
+        <div className="filter-group">
+          <label>Browser</label>
+          <select value={browser} onChange={(e) => { setBrowser(e.target.value); setPage(1); }}>
+            {allBrowsers.map((b) => <option key={b}>{b}</option>)}
           </select>
         </div>
         <div className="filter-group">
           <label>Search</label>
           <input
             type="text"
-            placeholder="SHA / author / run ID"
+            placeholder="author / run ID"
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             style={{ width: 180 }}
@@ -169,10 +177,10 @@ export function RunsTable({ runs }: RunsTableProps) {
           <thead>
             <tr>
               <th onClick={() => handleSort("timestamp")}>Timestamp{sortIcon("timestamp")}</th>
-              <th>Source</th>
-              <th>Branch</th>
-              <th>Commit</th>
               <th>Author</th>
+              <th>OS</th>
+              <th>Browser</th>
+              <th>Playwright</th>
               <th>Status</th>
               <th onClick={() => handleSort("passRate")}>Pass Rate{sortIcon("passRate")}</th>
               <th onClick={() => handleSort("totals.passed")}>Passed{sortIcon("totals.passed")}</th>
@@ -199,16 +207,24 @@ export function RunsTable({ runs }: RunsTableProps) {
                     hour: "2-digit", minute: "2-digit",
                   })}
                 </td>
-                <td>
-                  <span className={run.source ? "badge badge-purple" : "badge badge-gray"}>
-                    {run.source ?? "InsightsDemo"}
-                  </span>
-                </td>
-                <td>
-                  <span className="badge badge-blue">{run.branch}</span>
-                </td>
-                <td className="mono">{run.commit.slice(0, 8)}</td>
                 <td>{run.author}</td>
+                <td>
+                  {run.environment?.os
+                    ? <span className="badge badge-gray" title={`${run.environment.os} · ${run.environment.arch ?? ""}`}>
+                        {run.environment.platform === "darwin" ? "macOS" : run.environment.os}
+                      </span>
+                    : <span className="badge badge-gray">—</span>}
+                </td>
+                <td>
+                  {run.environment?.browser
+                    ? <span className="badge badge-blue" title={run.environment.browser}>
+                        {run.environment.browser.replace(" (Playwright-managed)", "")}
+                      </span>
+                    : <span className="badge badge-gray">—</span>}
+                </td>
+                <td className="mono" style={{ fontSize: 11 }}>
+                  {run.environment?.playwright ?? "—"}
+                </td>
                 <td>
                   <StatusBadge
                     passed={run.totals.passed}

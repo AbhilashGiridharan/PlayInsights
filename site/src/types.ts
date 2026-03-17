@@ -23,6 +23,16 @@ export interface TestTiming {
   durationMs: number;
 }
 
+export interface RunEnvironment {
+  os?: string;
+  platform?: string;
+  arch?: string;
+  browser?: string;
+  playwright?: string;
+  node?: string;
+  hostname?: string;
+}
+
 export interface RunSummary {
   runId: string;
   timestamp: string;
@@ -32,6 +42,7 @@ export interface RunSummary {
   ciUrl: string;
   /** Origin repo – e.g. "InsightsLogs" for external runs, absent for local Playwright runs */
   source?: string;
+  environment?: RunEnvironment;
   totals: {
     passed: number;
     failed: number;

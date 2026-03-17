@@ -87,6 +87,7 @@ interface RunSummary {
   author:       string;
   ciUrl:        string;
   source:       string;
+  environment?: RunEnvironment;
   totals:       { passed: number; failed: number; skipped: number; flaky: number };
   durations:    { totalMs: number; avgTestMs: number; p95TestMs: number };
   passRate:     number;
@@ -96,11 +97,22 @@ interface RunSummary {
   fastestTest?: TestTiming;
 }
 
+interface RunEnvironment {
+  os?: string;
+  platform?: string;
+  arch?: string;
+  browser?: string;
+  playwright?: string;
+  node?: string;
+  hostname?: string;
+}
+
 interface ExternalSummary {
-  timestamp:   string;
-  feature:     string;
-  status:      string;
-  generatedAt: string;
+  timestamp:    string;
+  feature:      string;
+  status:       string;
+  generatedAt:  string;
+  environment?: RunEnvironment;
 }
 
 // ── HTTP helpers ──────────────────────────────────────────────────────────────
@@ -209,14 +221,16 @@ async function main(): Promise<void> {
     );
     const files = folderItems.filter((i) => i.type === "file");
 
-    // 3. Read summary.json for generatedAt timestamp
-    let generatedAt = folder.replace(/_(\d{2})-(\d{2})-(\d{2})$/, "T$1:$2:$3") + "Z";
+    // 3. Read summary.json for generatedAt timestamp + environment
+    let generatedAt = folder.replace(/_(\/d{2})-(\/d{2})-(\/d{2})$/, "T$1:$2:$3") + "Z";
+    let environment: RunEnvironment | undefined;
     const summaryItem = files.find((f) => f.name === "summary.json");
     if (summaryItem?.download_url) {
       try {
         const raw = await rawFileGet(summaryItem.download_url);
         const s: ExternalSummary = JSON.parse(raw);
         if (s.generatedAt) generatedAt = s.generatedAt;
+        if (s.environment) environment = s.environment;
       } catch {
         // keep folder-derived timestamp
       }
@@ -320,6 +334,7 @@ async function main(): Promise<void> {
       author,
       ciUrl: `https://github.com/${EXTERNAL_OWNER}/${EXTERNAL_REPO}/tree/main/${EXTERNAL_PATH}/${folder}`,
       source:    SOURCE_LABEL,
+      ...(environment ? { environment } : {}),
       totals:    { passed: totalPassed, failed: totalFailed, skipped: totalSkipped, flaky: 0 },
       durations: {
         totalMs,

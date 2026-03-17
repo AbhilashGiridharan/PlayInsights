@@ -20,7 +20,7 @@
   "passRate": 75,
   "suites": [
     {
-      "name": "SauceDemo E2E – Standard User",
+      "name": "SauceDemo E2E \u2013 Standard User",
       "passed": 6,
       "failed": 2,
       "skipped": 0,
@@ -42,5 +42,14 @@
   "fastestTest": {
     "name": "Locked out user cannot log in",
     "durationMs": 3596
+  },
+  "environment": {
+    "os": "Darwin 25.2.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "browser": "Chromium (Playwright-managed)",
+    "playwright": "v1.58.2",
+    "node": "v25.8.0",
+    "hostname": "MacBookPro"
   }
 }
