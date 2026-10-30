@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 3,
   "runId": "InsightsLogs_2026-10-30_10-43-27",
   "timestamp": "2026-10-30T05:16:45.542Z",
   "branch": "main",
@@ -24,9 +25,9 @@
     "flaky": 0
   },
   "durations": {
-    "totalMs": 183250,
-    "avgTestMs": 26179,
-    "p95TestMs": 34572
+    "totalMs": 190688,
+    "avgTestMs": 27241,
+    "p95TestMs": 35376
   },
   "passRate": 14.3,
   "suites": [
@@ -35,35 +36,35 @@
       "passed": 1,
       "failed": 0,
       "skipped": 0,
-      "durationMs": 12454
+      "durationMs": 14803
     },
     {
       "name": "US-02 Create a New Job Risk Assessment",
       "passed": 0,
       "failed": 1,
       "skipped": 0,
-      "durationMs": 34572
+      "durationMs": 35376
     },
     {
       "name": "US-04 Generate the Job Risk Assessment PDF Report",
       "passed": 0,
       "failed": 1,
       "skipped": 0,
-      "durationMs": 14142
+      "durationMs": 15040
     },
     {
       "name": "US-05 Log in as a JRA user from Setup (Login As by profile)",
       "passed": 0,
       "failed": 2,
       "skipped": 0,
-      "durationMs": 60940
+      "durationMs": 62815
     },
     {
       "name": "US-06 JRA Submitter creates a Job Risk Assessment and keeps its ID",
       "passed": 0,
       "failed": 2,
       "skipped": 0,
-      "durationMs": 61142
+      "durationMs": 62654
     }
   ],
   "projects": [
@@ -76,10 +77,174 @@
   ],
   "longestTest": {
     "name": "SC-02.04 Save & New creates the record and opens a new, empty form",
-    "durationMs": 34572
+    "durationMs": 35376
   },
   "fastestTest": {
     "name": "SC-01.02 Search the list for a created assessment and open its record page",
-    "durationMs": 12454
-  }
+    "durationMs": 14803
+  },
+  "feature": "job-risk-assessment",
+  "startedAt": "2026-10-30T05:13:28.109Z",
+  "finishedAt": "2026-10-30T05:16:45.542Z",
+  "wallClockMs": 197391,
+  "steps": {
+    "total": 59,
+    "passed": 11,
+    "failed": 6,
+    "skipped": 42
+  },
+  "tests": [
+    {
+      "name": "SC-01.02 Search the list for a created assessment and open its record page",
+      "suite": "US-01 Find and Browse Job Risk Assessments",
+      "status": "passed",
+      "durationMs": 14803,
+      "retries": 0,
+      "steps": 6,
+      "tags": [
+        "@US-01",
+        "@SC-01.02",
+        "@AC-01.4",
+        "@AC-01.5",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-01-find-and-browse-job-risk-assessments.feature.spec.js",
+      "line": 17
+    },
+    {
+      "name": "SC-02.04 Save & New creates the record and opens a new, empty form",
+      "suite": "US-02 Create a New Job Risk Assessment",
+      "status": "failed",
+      "durationMs": 35376,
+      "retries": 0,
+      "steps": 9,
+      "tags": [
+        "@US-02",
+        "@SC-02.04",
+        "@AC-02.5",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-02-create-job-risk-assessment.feature.spec.js",
+      "line": 36,
+      "error": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('dialog', { name: 'New Job Risk Assessment' }).getByRole('combobox', { name: 'Job Type' }) to be visible\n    - waiting for \"https://zensartechnologiesltd3.lightning.force.com/lightning/o/Job_Risk_Assessment__c/list?filterName=__Recent\" navigation to finish...\n    - navigated to \"https://zensartechnologiesltd3.lightning.force.com/lightning/o/Job_Risk_Assessment__c/list?filterName=__Recent\"\n",
+      "failedStep": "When I open the New Job Risk Assessment form"
+    },
+    {
+      "name": "SC-04.01 Generate Assessment produces a PDF report for the record",
+      "suite": "US-04 Generate the Job Risk Assessment PDF Report",
+      "status": "failed",
+      "durationMs": 15040,
+      "retries": 0,
+      "steps": 4,
+      "tags": [
+        "@US-04",
+        "@SC-04.01",
+        "@AC-04.1",
+        "@P1",
+        "@e2e",
+        "@smoke",
+        "@regression",
+        "@possible-defect"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-04-generate-job-risk-assessment-pdf.feature.spec.js",
+      "line": 10,
+      "error": "Error: expect(received).toContain(expected) // indexOf\n\nExpected substring: \"application/pdf\"\nReceived string:    \"text/html; charset=UTF-8\"",
+      "failedStep": "Then a PDF document is produced for the created assessment"
+    },
+    {
+      "name": "SC-05.01 Admin logs in as the JRA Submitter from Setup > Profiles > View Users",
+      "suite": "US-05 Log in as a JRA user from Setup (Login As by profile)",
+      "status": "failed",
+      "durationMs": 31619,
+      "retries": 0,
+      "steps": 11,
+      "tags": [
+        "@US-05",
+        "@SC-05.01",
+        "@AC-05.1",
+        "@AC-05.2",
+        "@AC-05.3",
+        "@AC-05.4",
+        "@AC-05.5",
+        "@P1",
+        "@positive",
+        "@smoke",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-05-login-as-jra-user-from-setup.feature.spec.js",
+      "line": 10,
+      "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'App Launcher' })\nExpected: visible\nTimeout: 30000ms\nError: element(s) not found",
+      "failedStep": "Given I am logged into Salesforce as a sales agent"
+    },
+    {
+      "name": "SC-05.02 Admin logs in as the JRA Supervisor from Setup > Profiles > View Users",
+      "suite": "US-05 Log in as a JRA user from Setup (Login As by profile)",
+      "status": "failed",
+      "durationMs": 31196,
+      "retries": 0,
+      "steps": 10,
+      "tags": [
+        "@US-05",
+        "@SC-05.02",
+        "@AC-05.1",
+        "@AC-05.2",
+        "@AC-05.6",
+        "@P1",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-05-login-as-jra-user-from-setup.feature.spec.js",
+      "line": 23,
+      "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'App Launcher' })\nExpected: visible\nTimeout: 30000ms\nError: element(s) not found",
+      "failedStep": "Given I am logged into Salesforce as a sales agent"
+    },
+    {
+      "name": "SC-06.01 JRA Submitter creates a Job Risk Assessment and keeps its RA number",
+      "suite": "US-06 JRA Submitter creates a Job Risk Assessment and keeps its ID",
+      "status": "failed",
+      "durationMs": 31282,
+      "retries": 0,
+      "steps": 10,
+      "tags": [
+        "@US-06",
+        "@SC-06.01",
+        "@AC-06.1",
+        "@AC-06.4",
+        "@AC-06.5",
+        "@P1",
+        "@positive",
+        "@smoke",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-06-submitter-creates-job-risk-assessment.feature.spec.js",
+      "line": 11,
+      "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'App Launcher' })\nExpected: visible\nTimeout: 30000ms\nError: element(s) not found",
+      "failedStep": "Given I am logged into Salesforce as a sales agent"
+    },
+    {
+      "name": "SC-06.02 JRA Submitter sees the New form sections, fields, picklists and defaults",
+      "suite": "US-06 JRA Submitter creates a Job Risk Assessment and keeps its ID",
+      "status": "failed",
+      "durationMs": 31372,
+      "retries": 0,
+      "steps": 9,
+      "tags": [
+        "@US-06",
+        "@SC-06.02",
+        "@AC-06.2",
+        "@AC-06.3",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-06-submitter-creates-job-risk-assessment.feature.spec.js",
+      "line": 22,
+      "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'App Launcher' })\nExpected: visible\nTimeout: 30000ms\nError: element(s) not found",
+      "failedStep": "Given I am logged into Salesforce as a sales agent"
+    }
+  ]
 }

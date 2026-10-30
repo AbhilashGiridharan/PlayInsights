@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 3,
   "runId": "InsightsLogs_2026-10-29_16-36-05",
   "timestamp": "2026-10-29T11:07:04.383Z",
   "branch": "main",
@@ -24,9 +25,9 @@
     "flaky": 0
   },
   "durations": {
-    "totalMs": 104350,
-    "avgTestMs": 9486,
-    "p95TestMs": 13853
+    "totalMs": 113054,
+    "avgTestMs": 10278,
+    "p95TestMs": 14574
   },
   "passRate": 72.7,
   "suites": [
@@ -35,28 +36,28 @@
       "passed": 2,
       "failed": 0,
       "skipped": 0,
-      "durationMs": 18598
+      "durationMs": 20578
     },
     {
       "name": "US-02 Create a New Job Risk Assessment",
       "passed": 5,
       "failed": 1,
       "skipped": 0,
-      "durationMs": 51882
+      "durationMs": 56186
     },
     {
       "name": "US-03 View Job Risk Assessment Details",
       "passed": 1,
       "failed": 1,
       "skipped": 0,
-      "durationMs": 23292
+      "durationMs": 25144
     },
     {
       "name": "US-04 Generate the Job Risk Assessment PDF Report",
       "passed": 0,
       "failed": 1,
       "skipped": 0,
-      "durationMs": 10578
+      "durationMs": 11146
     }
   ],
   "projects": [
@@ -69,10 +70,241 @@
   ],
   "longestTest": {
     "name": "SC-03.02 Record page offers the actions, the Related tab and the Activity panel",
-    "durationMs": 13853
+    "durationMs": 14574
   },
   "fastestTest": {
     "name": "SC-02.06 Saving an empty New form is blocked with an error and creates no record",
-    "durationMs": 4955
-  }
+    "durationMs": 5418
+  },
+  "feature": "job-risk-assessment",
+  "startedAt": "2026-10-29T11:06:06.039Z",
+  "finishedAt": "2026-10-29T11:07:04.383Z",
+  "wallClockMs": 58121,
+  "steps": {
+    "total": 67,
+    "passed": 63,
+    "failed": 3,
+    "skipped": 1
+  },
+  "tests": [
+    {
+      "name": "SC-01.01 Open Job Risk Assessments from the App Launcher and see the Recently Viewed list",
+      "suite": "US-01 Find and Browse Job Risk Assessments",
+      "status": "passed",
+      "durationMs": 7971,
+      "retries": 0,
+      "steps": 5,
+      "tags": [
+        "@US-01",
+        "@SC-01.01",
+        "@AC-01.1",
+        "@AC-01.2",
+        "@AC-01.3",
+        "@P1",
+        "@positive",
+        "@smoke",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-01-find-and-browse-job-risk-assessments.feature.spec.js",
+      "line": 10
+    },
+    {
+      "name": "SC-02.01 Create a Job Risk Assessment with all fields and verify the saved record",
+      "suite": "US-02 Create a New Job Risk Assessment",
+      "status": "passed",
+      "durationMs": 9895,
+      "retries": 0,
+      "steps": 8,
+      "tags": [
+        "@US-02",
+        "@SC-02.01",
+        "@AC-02.1",
+        "@AC-02.2",
+        "@AC-02.3",
+        "@AC-02.4",
+        "@P1",
+        "@positive",
+        "@smoke",
+        "@regression",
+        "@selfheal"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-02-create-job-risk-assessment.feature.spec.js",
+      "line": 10
+    },
+    {
+      "name": "SC-03.01 Record page header and Details tab show all fields with the record's values",
+      "suite": "US-03 View Job Risk Assessment Details",
+      "status": "passed",
+      "durationMs": 10570,
+      "retries": 0,
+      "steps": 6,
+      "tags": [
+        "@US-03",
+        "@SC-03.01",
+        "@AC-03.1",
+        "@AC-03.2",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-03-view-job-risk-assessment-details.feature.spec.js",
+      "line": 10
+    },
+    {
+      "name": "SC-01.02 Search the list for a created assessment and open its record page",
+      "suite": "US-01 Find and Browse Job Risk Assessments",
+      "status": "passed",
+      "durationMs": 12607,
+      "retries": 0,
+      "steps": 6,
+      "tags": [
+        "@US-01",
+        "@SC-01.02",
+        "@AC-01.4",
+        "@AC-01.5",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-01-find-and-browse-job-risk-assessments.feature.spec.js",
+      "line": 17
+    },
+    {
+      "name": "SC-02.02 Create a Job Risk Assessment with the alternative values and verify the saved record",
+      "suite": "US-02 Create a New Job Risk Assessment",
+      "status": "passed",
+      "durationMs": 12758,
+      "retries": 0,
+      "steps": 4,
+      "tags": [
+        "@US-02",
+        "@SC-02.02",
+        "@AC-02.3",
+        "@AC-02.4",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-02-create-job-risk-assessment.feature.spec.js",
+      "line": 20
+    },
+    {
+      "name": "SC-03.02 Record page offers the actions, the Related tab and the Activity panel",
+      "suite": "US-03 View Job Risk Assessment Details",
+      "status": "failed",
+      "durationMs": 14574,
+      "retries": 0,
+      "steps": 4,
+      "tags": [
+        "@US-03",
+        "@SC-03.02",
+        "@AC-03.3",
+        "@AC-03.4",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-03-view-job-risk-assessment-details.feature.spec.js",
+      "line": 18,
+      "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'New Opportunity', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found",
+      "failedStep": "Then the record page offers the actions \"Generate Assessment\", \"New Contact\" and \"New Opportunity\""
+    },
+    {
+      "name": "SC-02.03 New form shows all fields, the picklist values and the Owner pre-filled",
+      "suite": "US-02 Create a New Job Risk Assessment",
+      "status": "passed",
+      "durationMs": 8481,
+      "retries": 0,
+      "steps": 8,
+      "tags": [
+        "@US-02",
+        "@SC-02.03",
+        "@AC-02.1",
+        "@AC-02.2",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-02-create-job-risk-assessment.feature.spec.js",
+      "line": 26
+    },
+    {
+      "name": "SC-04.01 Generate Assessment produces a PDF report for the record",
+      "suite": "US-04 Generate the Job Risk Assessment PDF Report",
+      "status": "failed",
+      "durationMs": 11146,
+      "retries": 0,
+      "steps": 4,
+      "tags": [
+        "@US-04",
+        "@SC-04.01",
+        "@AC-04.1",
+        "@P1",
+        "@e2e",
+        "@smoke",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-04-generate-job-risk-assessment-pdf.feature.spec.js",
+      "line": 10,
+      "error": "Error: expect(received).toContain(expected) // indexOf\n\nExpected substring: \"application/pdf\"\nReceived string:    \"text/html; charset=UTF-8\"",
+      "failedStep": "Then a PDF document is produced for the created assessment"
+    },
+    {
+      "name": "SC-02.04 Save & New creates the record and opens a new, empty form",
+      "suite": "US-02 Create a New Job Risk Assessment",
+      "status": "passed",
+      "durationMs": 10965,
+      "retries": 0,
+      "steps": 9,
+      "tags": [
+        "@US-02",
+        "@SC-02.04",
+        "@AC-02.5",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-02-create-job-risk-assessment.feature.spec.js",
+      "line": 36
+    },
+    {
+      "name": "SC-02.05 Cancel closes the New form without creating a record",
+      "suite": "US-02 Create a New Job Risk Assessment",
+      "status": "passed",
+      "durationMs": 8669,
+      "retries": 0,
+      "steps": 8,
+      "tags": [
+        "@US-02",
+        "@SC-02.05",
+        "@AC-02.5",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-02-create-job-risk-assessment.feature.spec.js",
+      "line": 47
+    },
+    {
+      "name": "SC-02.06 Saving an empty New form is blocked with an error and creates no record",
+      "suite": "US-02 Create a New Job Risk Assessment",
+      "status": "failed",
+      "durationMs": 5418,
+      "retries": 0,
+      "steps": 5,
+      "tags": [
+        "@US-02",
+        "@SC-02.06",
+        "@AC-02.6",
+        "@P2",
+        "@negative",
+        "@regression",
+        "@possible-defect"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-02-create-job-risk-assessment.feature.spec.js",
+      "line": 57,
+      "error": "Error: Saving an empty Job Risk Assessment form must be blocked with an error\n\nexpect(received).toBe(expected) // Object.is equality\n\nExpected: \"save blocked\"\nReceived: \"record created\"",
+      "failedStep": "Then saving is blocked with an error and no Job Risk Assessment is created"
+    }
+  ]
 }

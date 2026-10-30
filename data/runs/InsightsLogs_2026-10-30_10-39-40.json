@@ -1,0 +1,587 @@
+{
+  "schemaVersion": 3,
+  "runId": "InsightsLogs_2026-10-30_10-39-40",
+  "timestamp": "2026-10-30T05:14:46.457Z",
+  "branch": "main",
+  "commit": "456ccd65f775ceab87f3e7fd3f95fad3cd0390f5",
+  "author": "NoothannagasaiOM",
+  "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-10-30_10-39-40",
+  "source": "InsightsLogs",
+  "environment": {
+    "hostname": "MAINM46ZLPC1890",
+    "os": "Darwin 25.6.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v22.23.1",
+    "playwright": "v1.62.1",
+    "browser": "Chromium (Playwright-managed)",
+    "feature": "job-risk-assessment",
+    "executedAt": "2026-10-30T05:09:40.865Z"
+  },
+  "totals": {
+    "passed": 12,
+    "failed": 10,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "durations": {
+    "totalMs": 577541,
+    "avgTestMs": 26252,
+    "p95TestMs": 55370
+  },
+  "passRate": 54.5,
+  "suites": [
+    {
+      "name": "US-02 Create a New Job Risk Assessment",
+      "passed": 3,
+      "failed": 3,
+      "skipped": 0,
+      "durationMs": 104389
+    },
+    {
+      "name": "US-01 Find and Browse Job Risk Assessments",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 28351
+    },
+    {
+      "name": "US-03 View Job Risk Assessment Details",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 17399
+    },
+    {
+      "name": "US-04 Generate the Job Risk Assessment PDF Report",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 12019
+    },
+    {
+      "name": "US-05 Log in as a JRA user from Setup (Login As by profile)",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 43864
+    },
+    {
+      "name": "US-06 JRA Submitter creates a Job Risk Assessment and keeps its ID",
+      "passed": 2,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 118719
+    },
+    {
+      "name": "US-08 JRA Supervisor opens the submitted assessment and sees the same values",
+      "passed": 0,
+      "failed": 2,
+      "skipped": 0,
+      "durationMs": 82492
+    },
+    {
+      "name": "US-09 JRA Supervisor approves the assessment",
+      "passed": 1,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 104317
+    },
+    {
+      "name": "US-10 Open the approved PDF in Files",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 54005
+    },
+    {
+      "name": "US-11 End-to-end - Submitter submits, Supervisor approves the same assessment",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 11986
+    }
+  ],
+  "projects": [
+    {
+      "name": "AbhilashGiridharan/InsightsLogs",
+      "passed": 12,
+      "failed": 10,
+      "skipped": 0
+    }
+  ],
+  "longestTest": {
+    "name": "SC-08.01 JRA Supervisor finds the Submitter's assessment and sees the same values and approval actions",
+    "durationMs": 60645
+  },
+  "fastestTest": {
+    "name": "SC-02.06 Saving an empty New form is blocked with an error and creates no record",
+    "durationMs": 7328
+  },
+  "feature": "job-risk-assessment",
+  "startedAt": "2026-10-30T05:09:40.865Z",
+  "finishedAt": "2026-10-30T05:14:46.457Z",
+  "wallClockMs": 305692,
+  "steps": {
+    "total": 132,
+    "passed": 122,
+    "failed": 10,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "name": "SC-02.01 Create a Job Risk Assessment with all fields and verify the saved record",
+      "suite": "US-02 Create a New Job Risk Assessment",
+      "status": "passed",
+      "durationMs": 10847,
+      "retries": 0,
+      "steps": 8,
+      "tags": [
+        "@US-02",
+        "@SC-02.01",
+        "@AC-02.1",
+        "@AC-02.2",
+        "@AC-02.3",
+        "@AC-02.4",
+        "@P1",
+        "@positive",
+        "@smoke",
+        "@regression",
+        "@selfheal"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-02-create-job-risk-assessment.feature.spec.js",
+      "line": 10
+    },
+    {
+      "name": "SC-01.01 Open Job Risk Assessments from the App Launcher and see the Recently Viewed list",
+      "suite": "US-01 Find and Browse Job Risk Assessments",
+      "status": "passed",
+      "durationMs": 14539,
+      "retries": 0,
+      "steps": 5,
+      "tags": [
+        "@US-01",
+        "@SC-01.01",
+        "@AC-01.1",
+        "@AC-01.2",
+        "@AC-01.3",
+        "@P1",
+        "@positive",
+        "@smoke",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-01-find-and-browse-job-risk-assessments.feature.spec.js",
+      "line": 10
+    },
+    {
+      "name": "SC-01.02 Search the list for a created assessment and open its record page",
+      "suite": "US-01 Find and Browse Job Risk Assessments",
+      "status": "passed",
+      "durationMs": 13812,
+      "retries": 0,
+      "steps": 6,
+      "tags": [
+        "@US-01",
+        "@SC-01.02",
+        "@AC-01.4",
+        "@AC-01.5",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-01-find-and-browse-job-risk-assessments.feature.spec.js",
+      "line": 17
+    },
+    {
+      "name": "SC-03.01 Record page header and Details tab show all fields with the record's values",
+      "suite": "US-03 View Job Risk Assessment Details",
+      "status": "passed",
+      "durationMs": 8011,
+      "retries": 0,
+      "steps": 6,
+      "tags": [
+        "@US-03",
+        "@SC-03.01",
+        "@AC-03.1",
+        "@AC-03.2",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-03-view-job-risk-assessment-details.feature.spec.js",
+      "line": 10
+    },
+    {
+      "name": "SC-03.02 Record page offers the actions, the Related tab and the Activity panel",
+      "suite": "US-03 View Job Risk Assessment Details",
+      "status": "passed",
+      "durationMs": 9388,
+      "retries": 0,
+      "steps": 4,
+      "tags": [
+        "@US-03",
+        "@SC-03.02",
+        "@AC-03.3",
+        "@AC-03.4",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-03-view-job-risk-assessment-details.feature.spec.js",
+      "line": 18
+    },
+    {
+      "name": "SC-02.02 Create a Job Risk Assessment with the alternative values and verify the saved record",
+      "suite": "US-02 Create a New Job Risk Assessment",
+      "status": "failed",
+      "durationMs": 43773,
+      "retries": 0,
+      "steps": 2,
+      "tags": [
+        "@US-02",
+        "@SC-02.02",
+        "@AC-02.3",
+        "@AC-02.4",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-02-create-job-risk-assessment.feature.spec.js",
+      "line": 20,
+      "error": "Error: expect(page).toHaveURL(expected) failed\n\nExpected pattern: /\\/lightning\\/r\\/Job_Risk_Assessment__c\\/\\w+\\/view/\nReceived string:  \"https://zensartechnologiesltd3.lightning.force.com/lightning/r/a0Bf600000I5smzEAB/view\"\nTimeout: 30000ms\n",
+      "failedStep": "Given I have created a Job Risk Assessment from \"assessmentB\""
+    },
+    {
+      "name": "SC-04.01 Generate Assessment produces a PDF report for the record",
+      "suite": "US-04 Generate the Job Risk Assessment PDF Report",
+      "status": "failed",
+      "durationMs": 12019,
+      "retries": 0,
+      "steps": 4,
+      "tags": [
+        "@US-04",
+        "@SC-04.01",
+        "@AC-04.1",
+        "@P1",
+        "@e2e",
+        "@smoke",
+        "@regression",
+        "@possible-defect"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-04-generate-job-risk-assessment-pdf.feature.spec.js",
+      "line": 10,
+      "error": "Error: expect(received).toContain(expected) // indexOf\n\nExpected substring: \"application/pdf\"\nReceived string:    \"text/html; charset=UTF-8\"",
+      "failedStep": "Then a PDF document is produced for the created assessment"
+    },
+    {
+      "name": "SC-02.03 New form shows all fields, the picklist values and the Owner pre-filled",
+      "suite": "US-02 Create a New Job Risk Assessment",
+      "status": "passed",
+      "durationMs": 9891,
+      "retries": 0,
+      "steps": 8,
+      "tags": [
+        "@US-02",
+        "@SC-02.03",
+        "@AC-02.1",
+        "@AC-02.2",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-02-create-job-risk-assessment.feature.spec.js",
+      "line": 26
+    },
+    {
+      "name": "SC-05.01 Admin logs in as the JRA Submitter from Setup > Profiles > View Users",
+      "suite": "US-05 Log in as a JRA user from Setup (Login As by profile)",
+      "status": "passed",
+      "durationMs": 21134,
+      "retries": 0,
+      "steps": 11,
+      "tags": [
+        "@US-05",
+        "@SC-05.01",
+        "@AC-05.1",
+        "@AC-05.2",
+        "@AC-05.3",
+        "@AC-05.4",
+        "@AC-05.5",
+        "@P1",
+        "@positive",
+        "@smoke",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-05-login-as-jra-user-from-setup.feature.spec.js",
+      "line": 10
+    },
+    {
+      "name": "SC-02.04 Save & New creates the record and opens a new, empty form",
+      "suite": "US-02 Create a New Job Risk Assessment",
+      "status": "failed",
+      "durationMs": 17763,
+      "retries": 0,
+      "steps": 9,
+      "tags": [
+        "@US-02",
+        "@SC-02.04",
+        "@AC-02.5",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-02-create-job-risk-assessment.feature.spec.js",
+      "line": 36,
+      "error": "Error: expect(locator).toHaveText(expected) failed\n\nLocator: getByRole('status', { name: 'All' })\nExpected pattern: /^1 item •/\nReceived string:  \"50+ items • Sorted by Job Risk Assesment Name • \"\nTimeout: 5000ms",
+      "failedStep": "Then only the created assessment is listed"
+    },
+    {
+      "name": "SC-02.05 Cancel closes the New form without creating a record",
+      "suite": "US-02 Create a New Job Risk Assessment",
+      "status": "passed",
+      "durationMs": 14787,
+      "retries": 0,
+      "steps": 8,
+      "tags": [
+        "@US-02",
+        "@SC-02.05",
+        "@AC-02.5",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-02-create-job-risk-assessment.feature.spec.js",
+      "line": 47
+    },
+    {
+      "name": "SC-05.02 Admin logs in as the JRA Supervisor from Setup > Profiles > View Users",
+      "suite": "US-05 Log in as a JRA user from Setup (Login As by profile)",
+      "status": "passed",
+      "durationMs": 22730,
+      "retries": 0,
+      "steps": 10,
+      "tags": [
+        "@US-05",
+        "@SC-05.02",
+        "@AC-05.1",
+        "@AC-05.2",
+        "@AC-05.6",
+        "@P1",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-05-login-as-jra-user-from-setup.feature.spec.js",
+      "line": 23
+    },
+    {
+      "name": "SC-02.06 Saving an empty New form is blocked with an error and creates no record",
+      "suite": "US-02 Create a New Job Risk Assessment",
+      "status": "failed",
+      "durationMs": 7328,
+      "retries": 0,
+      "steps": 5,
+      "tags": [
+        "@US-02",
+        "@SC-02.06",
+        "@AC-02.6",
+        "@P2",
+        "@negative",
+        "@regression",
+        "@possible-defect"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-02-create-job-risk-assessment.feature.spec.js",
+      "line": 57,
+      "error": "Error: Saving an empty Job Risk Assessment form must be blocked with an error\n\nexpect(received).toBe(expected) // Object.is equality\n\nExpected: \"save blocked\"\nReceived: \"record created\"",
+      "failedStep": "Then saving is blocked with an error and no Job Risk Assessment is created"
+    },
+    {
+      "name": "SC-06.01 JRA Submitter creates a Job Risk Assessment and keeps its RA number",
+      "suite": "US-06 JRA Submitter creates a Job Risk Assessment and keeps its ID",
+      "status": "passed",
+      "durationMs": 32696,
+      "retries": 0,
+      "steps": 10,
+      "tags": [
+        "@US-06",
+        "@SC-06.01",
+        "@AC-06.1",
+        "@AC-06.4",
+        "@AC-06.5",
+        "@P1",
+        "@positive",
+        "@smoke",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-06-submitter-creates-job-risk-assessment.feature.spec.js",
+      "line": 11
+    },
+    {
+      "name": "SC-06.02 JRA Submitter sees the New form sections, fields, picklists and defaults",
+      "suite": "US-06 JRA Submitter creates a Job Risk Assessment and keeps its ID",
+      "status": "passed",
+      "durationMs": 30653,
+      "retries": 0,
+      "steps": 9,
+      "tags": [
+        "@US-06",
+        "@SC-06.02",
+        "@AC-06.2",
+        "@AC-06.3",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-06-submitter-creates-job-risk-assessment.feature.spec.js",
+      "line": 22
+    },
+    {
+      "name": "SC-08.01 JRA Supervisor finds the Submitter's assessment and sees the same values and approval actions",
+      "suite": "US-08 JRA Supervisor opens the submitted assessment and sees the same values",
+      "status": "failed",
+      "durationMs": 60645,
+      "retries": 0,
+      "steps": 6,
+      "tags": [
+        "@US-08",
+        "@SC-08.01",
+        "@AC-08.1",
+        "@AC-08.2",
+        "@AC-08.3",
+        "@P1",
+        "@positive",
+        "@smoke",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-08-supervisor-opens-submitted-assessment.feature.spec.js",
+      "line": 16,
+      "error": "Error: expect(locator).toHaveText(expected) failed\n\nLocator: getByRole('status', { name: 'All' })\nExpected pattern: /^1 item •/\nReceived string:  \"0 items • Sorted by Job Risk Assesment Name • \"\nTimeout: 5000ms",
+      "failedStep": "Then only the created assessment is listed"
+    },
+    {
+      "name": "SC-08.02 JRA Supervisor sees an empty Audit Approval section before approval",
+      "suite": "US-08 JRA Supervisor opens the submitted assessment and sees the same values",
+      "status": "failed",
+      "durationMs": 21847,
+      "retries": 0,
+      "steps": 2,
+      "tags": [
+        "@US-08",
+        "@SC-08.02",
+        "@AC-08.4",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-08-supervisor-opens-submitted-assessment.feature.spec.js",
+      "line": 22,
+      "error": "Error: apiRequestContext._wrapApiCall: file data stream has unexpected number of bytes",
+      "failedStep": "And I am logged in as \"jraSubmitter\" through Setup"
+    },
+    {
+      "name": "SC-06.03 JRA Submitter is not offered Approve Assessment on the record page",
+      "suite": "US-06 JRA Submitter creates a Job Risk Assessment and keeps its ID",
+      "status": "failed",
+      "durationMs": 55370,
+      "retries": 0,
+      "steps": 2,
+      "tags": [
+        "@US-06",
+        "@SC-06.03",
+        "@AC-06.6",
+        "@P2",
+        "@negative",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-06-submitter-creates-job-risk-assessment.feature.spec.js",
+      "line": 32,
+      "error": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('searchbox', { name: 'Quick Find' }) to be visible\n",
+      "failedStep": "And I am logged in as \"jraSubmitter\" through Setup"
+    },
+    {
+      "name": "SC-09.01 JRA Supervisor approves the assessment and sees the PDF and e-mail confirmation with the dummy Submitter Email",
+      "suite": "US-09 JRA Supervisor approves the assessment",
+      "status": "failed",
+      "durationMs": 51680,
+      "retries": 0,
+      "steps": 2,
+      "tags": [
+        "@US-09",
+        "@SC-09.01",
+        "@AC-09.1",
+        "@AC-09.2",
+        "@AC-09.3",
+        "@P1",
+        "@positive",
+        "@smoke",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-09-supervisor-approves-assessment.feature.spec.js",
+      "line": 16,
+      "error": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('link', { name: 'Log out as Test Script test', exact: true })\n",
+      "failedStep": "And I am logged in as \"jraSubmitter\" through Setup"
+    },
+    {
+      "name": "SC-10.01 JRA Supervisor opens the approved PDF in Files from the approval dialog",
+      "suite": "US-10 Open the approved PDF in Files",
+      "status": "failed",
+      "durationMs": 54005,
+      "retries": 0,
+      "steps": 2,
+      "tags": [
+        "@US-10",
+        "@SC-10.01",
+        "@AC-10.1",
+        "@AC-10.2",
+        "@P2",
+        "@positive",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-10-open-approved-pdf-in-files.feature.spec.js",
+      "line": 16,
+      "error": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('link', { name: 'Log out as Test Script test', exact: true })\n",
+      "failedStep": "And I am logged in as \"jraSubmitter\" through Setup"
+    },
+    {
+      "name": "SC-11.01 Submitter submits, Supervisor verifies, approves and opens the approved PDF",
+      "suite": "US-11 End-to-end - Submitter submits, Supervisor approves the same assessment",
+      "status": "failed",
+      "durationMs": 11986,
+      "retries": 0,
+      "steps": 2,
+      "tags": [
+        "@US-11",
+        "@SC-11.01",
+        "@AC-11.1",
+        "@AC-11.2",
+        "@AC-11.3",
+        "@AC-11.4",
+        "@P1",
+        "@e2e",
+        "@smoke",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-11-e2e-submitter-supervisor-approval.feature.spec.js",
+      "line": 10,
+      "error": "TimeoutError: locator.elementHandle: Timeout 2000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Setup', exact: true })\n",
+      "failedStep": "Given I am logged in as \"jraSubmitter\" through Setup"
+    },
+    {
+      "name": "SC-09.02 JRA Supervisor re-approves an already approved assessment",
+      "suite": "US-09 JRA Supervisor approves the assessment",
+      "status": "passed",
+      "durationMs": 52637,
+      "retries": 0,
+      "steps": 11,
+      "tags": [
+        "@US-09",
+        "@SC-09.02",
+        "@AC-09.4",
+        "@P2",
+        "@boundary",
+        "@regression"
+      ],
+      "file": ".features-gen/features/job-risk-assessment/US-09-supervisor-approves-assessment.feature.spec.js",
+      "line": 21
+    }
+  ]
+}
