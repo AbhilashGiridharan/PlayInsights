@@ -110,14 +110,14 @@ function QualityRing({ score, color }: { score: number; color: string }) {
   const circ = 2 * Math.PI * r;
   const fill = (score / 100) * circ;
   return (
-    <div style={{ position: "relative", width: 88, height: 88, flexShrink: 0 }}>
+    <div className="quality-ring">
       <svg width="88" height="88" viewBox="0 0 88 88">
         <circle cx="44" cy="44" r={r} fill="none" stroke="var(--border)" strokeWidth="7" />
         <circle cx="44" cy="44" r={r} fill="none" stroke={color} strokeWidth="7"
           strokeDasharray={`${fill} ${circ}`} strokeLinecap="round"
           transform="rotate(-90 44 44)" />
       </svg>
-      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 20, color }}>
+      <div className="quality-ring-label" style={{ color }}>
         {score}
       </div>
     </div>
@@ -152,34 +152,34 @@ export function SummaryCards({ runs, latest }: SummaryCardsProps) {
     <>
       {/* Quality Score Banner */}
       <div className="card quality-score-card" style={{ borderLeft: `4px solid ${qs.color}` }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+        <div className="qs-layout">
           <QualityRing score={qs.score} color={qs.color} />
-          <div style={{ flex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-              <span className="card-label" style={{ fontSize: 12 }}>🏅 Quality Score</span>
-              <span style={{ background: qs.color, color: "#fff", fontWeight: 800, fontSize: 13, borderRadius: 6, padding: "2px 10px", letterSpacing: "0.04em" }}>{qs.grade}</span>
-              <span style={{ color: qs.color, fontWeight: 600, fontSize: 14 }}>{qs.label}</span>
+          <div className="qs-body">
+            <div className="qs-head">
+              <span className="card-label qs-title">🏅 Quality Score</span>
+              <span className="qs-grade" style={{ background: qs.color }}>{qs.grade}</span>
+              <span className="qs-label" style={{ color: qs.color }}>{qs.label}</span>
             </div>
-            <div style={{ display: "flex", gap: 24, flexWrap: "wrap", marginTop: 6 }}>
-              <div>
-                <div style={{ fontSize: 11, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Avg Pass Rate</div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: "var(--accent-green)" }}>{qs.passWeight}%</div>
-                <div style={{ fontSize: 10, color: "var(--text-muted)" }}>50% weight</div>
+            <div className="qs-metrics">
+              <div className="qs-metric">
+                <div className="qs-metric-label">Avg Pass Rate</div>
+                <div className="qs-metric-value" style={{ color: "var(--accent-green)" }}>{qs.passWeight}%</div>
+                <div className="qs-metric-sub">50% weight</div>
               </div>
-              <div>
-                <div style={{ fontSize: 11, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Clean Runs</div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: "var(--accent-blue)" }}>{qs.cleanWeight}%</div>
-                <div style={{ fontSize: 10, color: "var(--text-muted)" }}>30% weight</div>
+              <div className="qs-metric">
+                <div className="qs-metric-label">Clean Runs</div>
+                <div className="qs-metric-value" style={{ color: "var(--accent-blue)" }}>{qs.cleanWeight}%</div>
+                <div className="qs-metric-sub">30% weight</div>
               </div>
-              <div>
-                <div style={{ fontSize: 11, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Flaky-Free Runs</div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: "var(--accent-purple)" }}>{qs.flakyWeight}%</div>
-                <div style={{ fontSize: 10, color: "var(--text-muted)" }}>15% weight</div>
+              <div className="qs-metric">
+                <div className="qs-metric-label">Flaky-Free Runs</div>
+                <div className="qs-metric-value" style={{ color: "var(--accent-purple)" }}>{qs.flakyWeight}%</div>
+                <div className="qs-metric-sub">15% weight</div>
               </div>
-              <div>
-                <div style={{ fontSize: 11, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Based On</div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>{runs.slice(0, SPARKLINE_DAYS).length}</div>
-                <div style={{ fontSize: 10, color: "var(--text-muted)" }}>run{runs.length !== 1 ? "s" : ""}</div>
+              <div className="qs-metric">
+                <div className="qs-metric-label">Based On</div>
+                <div className="qs-metric-value">{runs.slice(0, SPARKLINE_DAYS).length}</div>
+                <div className="qs-metric-sub">run{runs.length !== 1 ? "s" : ""}</div>
               </div>
             </div>
           </div>

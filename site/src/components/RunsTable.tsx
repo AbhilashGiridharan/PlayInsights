@@ -256,7 +256,7 @@ export function RunsTable({ runs }: RunsTableProps) {
                   {run.totals.flaky}
                 </td>
                 <td className="mono">{fmt(run.durations.totalMs)}</td>
-                <td style={{ display: "flex", gap: 8 }}>
+                <td>
                   {run.ciUrl && (
                     <a
                       href={run.ciUrl}
@@ -265,7 +265,7 @@ export function RunsTable({ runs }: RunsTableProps) {
                       className="btn btn-sm"
                       title="View CI Run"
                     >
-                      CI
+                      CI ↗
                     </a>
                   )}
                 </td>

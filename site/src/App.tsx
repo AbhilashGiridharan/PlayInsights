@@ -56,12 +56,22 @@ function App() {
       {/* Header */}
       <header className="header">
         <div className="header-title">
-          <span>🔭</span>
-          <span>Insights360</span>
+          <span className="header-logo">🔭</span>
+          <span className="header-name">
+            Insights360
+            <small>Test quality dashboard</small>
+          </span>
         </div>
+        <nav className="header-nav" aria-label="Sections">
+          <a href="#overview">Overview</a>
+          <a href="#failure-analysis">Failure Analysis</a>
+          {runs.length > 0 && <a href="#trends">Trends</a>}
+          <a href="#run-history">Run History</a>
+        </nav>
         <div className="header-actions">
           {lastFetchedAt && (
-            <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
+            <span className={`header-updated${error ? " is-error" : ""}`}>
+              <span className="live-dot" />
               Updated {lastFetchedAt.toLocaleTimeString()}
             </span>
           )}
@@ -70,8 +80,8 @@ function App() {
               type="checkbox"
               checked={autoRefresh}
               onChange={(e: { target: { checked: boolean } }) => setAutoRefresh(e.target.checked)}
-              style={{ accentColor: "var(--accent-purple)" }}
             />
+            <span className="switch" aria-hidden="true" />
             Auto-refresh
           </label>
           <button
@@ -121,7 +131,7 @@ function App() {
         ) : (
           <>
             {/* Overview + Daily Summary – unified panel */}
-            <div className="section-title">Overview</div>
+            <div className="section-title" id="overview">Overview</div>
             <div className="overview-layout">
               <div className="overview-main">
                 <SummaryCards runs={runs} latest={latest} />
@@ -132,13 +142,13 @@ function App() {
             </div>
 
             {/* Failure Analysis */}
-            <div className="section-title">Failure Analysis</div>
+            <div className="section-title" id="failure-analysis">Failure Analysis</div>
             <FailureAnalyticsSection dataUrl={`${DATA_BASE}/analysis.json`} runs={runs} />
 
             {/* Charts */}
             {runs.length > 0 && (
               <>
-                <div className="section-title">Trends</div>
+                <div className="section-title" id="trends">Trends</div>
                 <Suspense fallback={<LoadingSpinner />}>
                   <TrendCharts runs={runs} theme={theme} />
                 </Suspense>
@@ -146,7 +156,7 @@ function App() {
             )}
 
             {/* Runs Table */}
-            <div className="section-title">Run History</div>
+            <div className="section-title" id="run-history">Run History</div>
             <Suspense fallback={<LoadingSpinner />}>
               <RunsTable runs={runs} />
             </Suspense>
