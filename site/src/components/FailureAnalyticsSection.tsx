@@ -1,10 +1,17 @@
 /**
  * FailureAnalyticsSection.tsx - Compact tabbed card + modal drill-down
  * Layout: single card with 7 tab buttons. Clicking a row opens a detail modal.
+ *
+ * Tab content comes from analysis.json when that file covers the selected run;
+ * otherwise it is derived from the run's own per-scenario results.
  */
 
 import { useEffect, useState } from "react";
-import type { RunSummary } from "../types";
+import type { RunSummary, TestResult } from "../types";
+import {
+  categorize, categoryColor, diffRuns, errorHeadline, expectedReceived, failStreak, fmtRunLabel,
+  groupByScenario, isPossibleDefect, previousRun, priorityOf, splitScenario, splitStory,
+} from "../lib/insights";
 
 // -- Types --
 interface RootCause   { type: string; count: number }
@@ -20,6 +27,10 @@ interface ErrorContext {
   expected: string; received: string; failedStep: string;
   file: string; line?: number; occurrences: number;
   firstSeen: string; lastSeen: string;
+  /** Full error output, when available */
+  message?: string;
+  /** Status in recent runs, oldest → newest (null = not run) */
+  history?: Array<{ when: string; status: TestResult["status"] | null }>;
 }
 interface RCAEntry {
   rootCause: string; count: number; description: string;
@@ -62,7 +73,7 @@ interface AnalysisPayload {
   impactAssessment?: ImpactAssessment;
   actionItems?: ActionItem[];
 }
-interface Props { dataUrl: string; runs?: RunSummary[]; className?: string }
+interface Props { dataUrl: string; runs: RunSummary[]; run: RunSummary; className?: string }
 
 // -- Utils --
 function clx(...a: (string | undefined | false)[]) { return a.filter(Boolean).join(" "); }
@@ -92,8 +103,18 @@ function Pill({ label, cls }: { label: string; cls: string }) {
   return <span className={clx("fa2-pill", cls)}>{label}</span>;
 }
 
-// -- Colors for breakdown bar --
-const D_COLORS = ["#7c3aed", "#2563eb", "#0d9488", "#d97706", "#dc2626", "#16a34a"];
+const HISTORY_RUNS = 8;
+
+function HistoryDots({ history }: { history: NonNullable<ErrorContext["history"]> }) {
+  return (
+    <span className="fa2-history" aria-label="Recent runs, oldest to newest">
+      {history.map((h, i) => (
+        <span key={i} className={`fa2-hdot ${h.status ?? "none"}`}
+          title={`${fmtRunLabel(h.when)} — ${h.status ?? "not run"}`} />
+      ))}
+    </span>
+  );
+}
 
 // -- Modal --
 function Modal({ title, onClose, children }: {
@@ -135,17 +156,36 @@ function TabErrors({ items }: { items: ErrorContext[] }) {
   if (!items.length) return <div className="fa2-empty">No errors recorded in this window.</div>;
   return (
     <>
-      <div className="fa2-rows">
-        {items.map((e, i) => (
-          <div key={i} className="fa2-row" onClick={() => setModal(e)}
-            role="button" tabIndex={0} onKeyDown={k => k.key === "Enter" && setModal(e)}>
-            <Pill label={e.errorType} cls="fa2-sev-critical" />
-            <span className="fa2-row-main" title={e.testId}>{e.testId}</span>
-            <span className="fa2-row-sub">{e.suite}</span>
-            <span className="fa2-row-badge">{e.occurrences}x</span>
-            <span className="fa2-row-hint">View &rarr;</span>
-          </div>
-        ))}
+      <div className="fa2-err-list">
+        {items.map((e, i) => {
+          const sc = splitScenario(e.testId);
+          const story = splitStory(e.suite);
+          return (
+            <div key={i} className="fa2-err" onClick={() => setModal(e)}
+              role="button" tabIndex={0} onKeyDown={k => k.key === "Enter" && setModal(e)}>
+              <span className="fa2-err-cause" style={{ background: categoryColor(e.errorType, i) }} aria-hidden="true" />
+              <div className="fa2-err-body">
+                <div className="fa2-err-head">
+                  {sc.id && <span className="scenario-id">{sc.id}</span>}
+                  <span className="fa2-err-title" title={e.testId}>{sc.title}</span>
+                </div>
+                <div className="fa2-err-meta">
+                  <span className="fa2-err-type">{e.errorType}</span>
+                  <span className="fa2-err-story" title={e.suite}>{story.id ?? story.title}</span>
+                  {e.failedStep && e.failedStep !== "—" && <span className="fa2-err-step" title={e.failedStep}>at “{e.failedStep}”</span>}
+                </div>
+                {e.message && <code className="fa2-err-msg" title={e.message}>{errorHeadline(e.message)}</code>}
+              </div>
+              <div className="fa2-err-side">
+                {e.history && <HistoryDots history={e.history} />}
+                <span className="fa2-err-count">
+                  {e.history ? `failed ${e.occurrences}/${e.history.filter(h => h.status).length} runs` : `${e.occurrences}x`}
+                </span>
+                <span className="fa2-row-hint">Details &rarr;</span>
+              </div>
+            </div>
+          );
+        })}
       </div>
       {modal && (
         <Modal title="Error Context" onClose={() => setModal(null)}>
@@ -154,7 +194,7 @@ function TabErrors({ items }: { items: ErrorContext[] }) {
             <div className="fa2-modal-kv"><span>Suite</span><span>{modal.suite}</span></div>
             <div className="fa2-modal-kv"><span>Type</span><Pill label={modal.errorType} cls="fa2-sev-critical" /></div>
             <div className="fa2-modal-kv"><span>Step</span><em>{modal.failedStep}</em></div>
-            <div className="fa2-modal-kv"><span>File</span><code>{modal.file}{modal.line ? `:${modal.line}` : ""}</code></div>
+            {modal.file && <div className="fa2-modal-kv"><span>File</span><code>{modal.file}{modal.line ? `:${modal.line}` : ""}</code></div>}
             <div className="fa2-modal-kv"><span>Occurrences</span><span>{modal.occurrences}</span></div>
             <div className="fa2-modal-kv"><span>First seen</span><span>{timeAgo(modal.firstSeen)}</span></div>
             <div className="fa2-modal-kv"><span>Last seen</span><span>{timeAgo(modal.lastSeen)}</span></div>
@@ -171,6 +211,12 @@ function TabErrors({ items }: { items: ErrorContext[] }) {
               <code>{modal.received}</code>
             </div>
           </div>
+          {modal.message && (
+            <div className="fa2-modal-section">
+              <div className="fa2-modal-sec-title">Error output</div>
+              <pre className="fa2-code-pre fa2-error-pre"><code>{modal.message}</code></pre>
+            </div>
+          )}
         </Modal>
       )}
     </>
@@ -192,14 +238,14 @@ function TabRCA({ items, rootCauses }: { items: RCAEntry[]; rootCauses: RootCaus
             <div className="fa2-rca-bar">
               {rootCauses.map((r, i) => (
                 <div key={i} className="fa2-rca-bar-seg"
-                  style={{ width: `${(r.count / total) * 100}%`, background: D_COLORS[i % D_COLORS.length] }}
+                  style={{ width: `${(r.count / total) * 100}%`, background: categoryColor(r.type, i) }}
                   title={`${r.type}: ${r.count}`} />
               ))}
             </div>
             <div className="fa2-rca-sum-items">
               {rootCauses.map((r, i) => (
                 <span key={i} className="fa2-rca-sum-item">
-                  <span className="fa2-rca-sum-dot" style={{ background: D_COLORS[i % D_COLORS.length] }} />
+                  <span className="fa2-rca-sum-dot" style={{ background: categoryColor(r.type, i) }} />
                   {r.type}&nbsp;<strong>{r.count}</strong>
                 </span>
               ))}
@@ -487,170 +533,300 @@ const TABS = [
   { id: "actions",      label: "Actions"      },
 ];
 
-// == MAIN COMPONENT ==
-function formatRunOption(run: RunSummary, latestRunId: string | null): string {
-  const d = new Date(run.timestamp);
-  const date = d.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
-  const time = d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
-  const status = run.totals.failed > 0 ? `${run.totals.failed} failed` : "✓ all passed";
-  return `${date} · ${time}  —  ${status}${run.runId === latestRunId ? "  (latest)" : ""}`;
+// == DERIVED ANALYSIS (from run results) ==
+
+const RANK = { Low: 0, Medium: 1, High: 2, Critical: 3 } as const;
+type Level = keyof typeof RANK;
+const LEVELS: Level[] = ["Low", "Medium", "High", "Critical"];
+
+function severityOf(t: TestResult): Level {
+  const base: Level = priorityOf(t) === "P1" ? "High" : priorityOf(t) === "P3" ? "Low" : "Medium";
+  return isPossibleDefect(t) ? LEVELS[Math.min(3, RANK[base] + 1)] : base;
 }
 
-export function FailureAnalyticsSection({ dataUrl, runs: runsProp, className }: Props) {
+function deriveAnalysis(runs: RunSummary[], run: RunSummary) {
+  const isAll = Boolean(run.aggregateOf);
+  // Every failed execution (one per run in "all runs" mode) …
+  const failedExec = (run.tests ?? []).filter(t => t.status === "failed");
+  // … and one entry per failing scenario, keeping its most recent failure
+  const failed = groupByScenario(failedExec).map(g => g.runs[0]);
+  const prev = isAll ? null : previousRun(runs, run);
+  const diff = diffRuns(prev, run);
+  const t0 = new Date(run.timestamp).getTime();
+  const history = runs.filter(r => new Date(r.timestamp).getTime() <= t0);
+
+  const errorContext: ErrorContext[] = failed.map(t => {
+    const failingRuns = history.filter(r => r.tests?.some(x => x.name === t.name && x.status === "failed"));
+    const { expected, received } = expectedReceived(t.error);
+    return {
+      testId: t.name, suite: t.suite, errorType: categorize(t).label,
+      expected, received, failedStep: t.failedStep ?? "—",
+      file: t.file ?? "", line: t.line, occurrences: failingRuns.length,
+      firstSeen: failingRuns[failingRuns.length - 1]?.timestamp ?? run.timestamp,
+      lastSeen: failingRuns[0]?.timestamp ?? run.timestamp,
+      message: t.error,
+      history: history.slice(0, HISTORY_RUNS).reverse().map(r => ({
+        when: r.timestamp,
+        status: r.tests?.find(x => x.name === t.name)?.status ?? null,
+      })),
+    };
+  });
+
+  const byCat = new Map<string, { cat: ReturnType<typeof categorize>; tests: TestResult[] }>();
+  for (const t of failedExec) {
+    const cat = categorize(t);
+    const g = byCat.get(cat.key) ?? { cat, tests: [] };
+    g.tests.push(t);
+    byCat.set(cat.key, g);
+  }
+  const groups = [...byCat.values()].sort((a, b) => b.tests.length - a.tests.length);
+  const rootCauses: RootCause[] = groups.map(g => ({ type: g.cat.label, count: g.tests.length }));
+  const rca: RCAEntry[] = groups.map(g => {
+    const persistent = g.tests.filter(t => failStreak(runs, run, t.name) > 1).length;
+    return {
+      rootCause: g.cat.label, count: g.tests.length, description: g.cat.description,
+      affectedTests: [...new Set(g.tests.map(t => t.name))],
+      likelihood: g.cat.key === "defect" || persistent > 0 ? "High" : g.tests.length > 1 ? "Medium" : "Low",
+      evidence: errorHeadline(g.tests[0].error) +
+        (persistent
+          ? isAll ? ` — ${persistent} of these are still failing in the latest runs.`
+                  : ` — ${persistent} of these also failed in the previous run.`
+          : ""),
+    };
+  });
+
+  const byStory = new Map<string, TestResult[]>();
+  failedExec.forEach(t => byStory.set(t.suite, [...(byStory.get(t.suite) ?? []), t]));
+  const failureMapping: FailureMapping[] = [...byStory.entries()].map(([story, ts]) => {
+    const total = run.tests!.filter(t => t.suite === story).length;
+    return {
+      area: story,
+      severity: ts.map(severityOf).reduce((a, b) => (RANK[b] > RANK[a] ? b : a), "Low" as Level),
+      failures: ts.length, affectedTests: [...new Set(ts.map(t => t.name))],
+      description: `${ts.length} of ${total} scenario ${isAll ? "executions" : total > 1 ? "runs" : "run"} in this user story failed. ` +
+        groupByScenario(ts).map(g => `${g.name}: ${g.runs[0].failedStep ?? errorHeadline(g.runs[0].error)}`).join(" · "),
+    };
+  }).sort((a, b) => RANK[b.severity] - RANK[a.severity] || b.failures - a.failures);
+
+  const suggestedImprovements: SuggestedImprovement[] = groups.map(g => ({
+    category: g.cat.label, title: g.cat.improvement.title, description: g.cat.improvement.description,
+    effort: g.cat.improvement.effort, impact: g.tests.length > 1 || g.cat.key === "defect" ? "High" : "Medium",
+  }));
+
+  const actionItems: ActionItem[] = failed.map((t): ActionItem => ({
+    priority: priorityOf(t) ?? "P2",
+    title: `${isPossibleDefect(t) ? "Confirm possible defect" : "Investigate failure"}: ${t.name}`,
+    description: `${t.failedStep ? `Failed at “${t.failedStep}”. ` : ""}${errorHeadline(t.error)}`,
+    owner: isPossibleDefect(t) ? "Product / Dev team" : "QA automation team",
+    status: "Open",
+  })).sort((a, b) => a.priority.localeCompare(b.priority));
+
+  const p1Failed = failed.filter(t => priorityOf(t) === "P1").length;
+  const overallRisk: Level =
+    run.passRate < 50 ? "Critical" : p1Failed > 0 || run.passRate < 75 ? "High" : failed.length ? "Medium" : "Low";
+  const storyTitles = [...byStory.keys()].map(n => splitStory(n).id ?? n);
+  const impactAssessment: ImpactAssessment | undefined = failed.length ? {
+    overallRisk,
+    affectedFeatures: [...byStory.keys()].map(n => splitStory(n).title),
+    testsBlocked: failed.length,
+    estimatedFixTime: `${failed.length} scenario${failed.length > 1 ? "s" : ""} to triage`,
+    businessImpact:
+      `${byStory.size} user stor${byStory.size > 1 ? "ies have" : "y has"} failing acceptance scenarios (${storyTitles.join(", ")}). ` +
+      (p1Failed ? `${p1Failed} failure${p1Failed > 1 ? "s are" : " is"} on P1 (critical) scenarios.` : "No P1 (critical) scenarios are failing."),
+    regressionRisk: isAll
+      ? (() => {
+          const latest = new Map((runs[0]?.tests ?? []).map(t => [t.name, t.status]));
+          const still = failed.filter(t => latest.get(t.name) === "failed").length;
+          const recovered = failed.filter(t => latest.get(t.name) === "passed").length;
+          return `${failed.length} scenario${failed.length > 1 ? "s have" : " has"} failed at least once: ${still} still failing in the latest run, ${recovered} passing again, ${failed.length - still - recovered} not run in the latest run.`;
+        })()
+      : prev
+      ? `${diff.newFailures.length} new since the previous run, ${diff.persistent.length} carried over, ${diff.fixed.length} fixed.`
+      : "No earlier run to compare against.",
+  } : undefined;
+
+  return {
+    errorContext, rootCauses, rca, failureMapping, suggestedImprovements, actionItems,
+    impactAssessment, newFailures: prev ? diff.newFailures.length : failed.length,
+    // Failing scenarios that also failed before: carried over (single run) or failed in 2+ runs (all runs)
+    recurring: isAll
+      ? groupByScenario(failedExec).filter(g => g.runs.length > 1).length
+      : prev ? diff.persistent.length : 0,
+  };
+}
+
+// == MAIN COMPONENT ==
+export function FailureAnalyticsSection({ dataUrl, runs, run, className }: Props) {
   const [data,    setData]    = useState<AnalysisPayload | null>(null);
-  const [err,     setErr]     = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab,     setTab]     = useState("errors");
 
-  // Run selector: default to the run with the latest timestamp
-  const latestRunId = runsProp && runsProp.length > 0
-    ? runsProp.reduce((best, r) =>
-        new Date(r.timestamp) > new Date(best.timestamp) ? r : best
-      ).runId
-    : null;
-  const [selectedRunId, setSelectedRunId] = useState<string | null>(latestRunId);
-
-  // Keep selection in sync when runs data first arrives
   useEffect(() => {
-    if (latestRunId) setSelectedRunId(prev => prev ?? latestRunId);
-  }, [latestRunId]);
-
-  useEffect(() => {
-    setLoading(true); setErr(null);
+    setLoading(true);
     fetch(dataUrl, { cache: "no-cache" })
       .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json() as Promise<AnalysisPayload>; })
       .then(setData)
-      .catch((e: Error) => setErr(e.message))
+      // analysis.json is optional – the derived analysis covers every run
+      .catch(() => setData(null))
       .finally(() => setLoading(false));
   }, [dataUrl]);
 
   if (loading) return <Skeleton />;
-  if (err)     return <div className="fa2-load-error">Failed to load analysis: {err}</div>;
-  if (!data)   return null;
 
-  const {
-    rootCauses: allRootCauses,
-    errorContext = [], rca = [], failureMapping = [],
-    codeFixes = [], suggestedImprovements = [],
-    impactAssessment, actionItems = [],
-    recentFailures = [],
-  } = data;
+  // Use analysis.json only when it was generated for this run
+  const external = data && data.recentFailures?.some(f => f.runId === run.runId) ? data : null;
+  const derived  = deriveAnalysis(runs, run);
+  const hasDetail = (run.tests?.length ?? 0) > 0;
+  const isAll = Boolean(run.aggregateOf);
 
-  // -- Derive effective data for the selected run --
-  const selectedRun = runsProp?.find(r => r.runId === selectedRunId) ?? null;
+  const failures    = run.totals.failed;
+  const executed    = run.totals.passed + run.totals.failed;
+  const totalTests  = executed + run.totals.skipped;
+  const failureRate = executed > 0 ? parseFloat(((failures / executed) * 100).toFixed(1)) : 0;
+  const hasFailures = failures > 0;
 
-  const effectiveSummary = selectedRun
-    ? {
-        failures:    selectedRun.totals.failed,
-        failureRate: (selectedRun.totals.passed + selectedRun.totals.failed) > 0
-          ? parseFloat(((selectedRun.totals.failed / (selectedRun.totals.passed + selectedRun.totals.failed)) * 100).toFixed(1))
-          : 0,
-        newFailures: data.summary.newFailures,
-        flakyTests:  selectedRun.totals.flaky,
-      }
-    : data.summary;
+  const failedIds = new Set((external?.recentFailures ?? []).filter(f => f.runId === run.runId).map(f => f.testId));
+  const tabs = external ? {
+    errors: (external.errorContext ?? []).filter(e => failedIds.has(e.testId)),
+    rootCauses: external.rootCauses, rca: external.rca ?? [], mapping: external.failureMapping ?? [],
+    fixes: external.codeFixes ?? [], improvements: external.suggestedImprovements ?? [],
+    impact: external.impactAssessment, actions: external.actionItems ?? [],
+    newFailures: external.summary.newFailures, recurring: null as number | null,
+  } : {
+    errors: derived.errorContext, rootCauses: derived.rootCauses, rca: derived.rca,
+    mapping: derived.failureMapping, fixes: [] as CodeFix[], improvements: derived.suggestedImprovements,
+    impact: derived.impactAssessment, actions: derived.actionItems, newFailures: derived.newFailures,
+    recurring: derived.recurring as number | null,
+  };
 
-  const effectiveCoverage = selectedRun
-    ? {
-        totalTests: selectedRun.totals.passed + selectedRun.totals.failed + selectedRun.totals.skipped,
-        executed:   selectedRun.totals.passed + selectedRun.totals.failed,
-      }
-    : data.coverage;
+  const openActions = tabs.actions.filter(a => a.status === "Open").length;
+  const risk = tabs.impact?.overallRisk;
+  const unit = isAll ? "executions" : "scenarios";
 
-  // Filter failures to the selected run
-  const effectiveRecentFailures = selectedRunId
-    ? recentFailures.filter(f => f.runId === selectedRunId)
-    : recentFailures;
+  const causeTotal = tabs.rootCauses.reduce((n, r) => n + r.count, 0) || 1;
+  const storyMax = Math.max(1, ...tabs.mapping.map(m => m.failures));
 
-  const failedTestIds = new Set(effectiveRecentFailures.map(f => f.testId));
-  const hasFailures   = effectiveSummary.failures > 0;
-
-  // Derive root causes from current run's failures
-  const effectiveRootCauses: RootCause[] = hasFailures
-    ? selectedRun
-      ? Object.entries(
-          effectiveRecentFailures.reduce<Record<string, number>>((acc, f) => {
-            acc[f.rootCause] = (acc[f.rootCause] ?? 0) + 1; return acc;
-          }, {})
-        ).map(([type, count]) => ({ type, count }))
-      : allRootCauses
-    : [];
-
-  // Tab data: filter / suppress based on selected run
-  const effectiveErrors       = hasFailures ? errorContext.filter(e => failedTestIds.has(e.testId)) : [];
-  const effectiveRca          = hasFailures ? rca          : [];
-  const effectiveMapping      = hasFailures ? failureMapping : [];
-  const effectiveFixes        = hasFailures ? codeFixes    : [];
-  const effectiveImprovements = hasFailures ? suggestedImprovements : [];
-  const effectiveImpact       = hasFailures ? impactAssessment : undefined;
-  const effectiveActions      = hasFailures ? actionItems  : [];
-
-  const openActions = effectiveActions.filter(a => a.status === "Open").length;
-
-  const riskColor = effectiveImpact
-    ? effectiveImpact.overallRisk === "Critical" ? "var(--accent-red)"
-    : effectiveImpact.overallRisk === "High"     ? "var(--accent-yellow)"
-    : effectiveImpact.overallRisk === "Medium"   ? "var(--accent-blue)"
-    : "var(--accent-green)"
-    : undefined;
-
-  const kpis = [
-    { label: "Total Failures", value: String(effectiveSummary.failures),    color: "var(--accent-red)",    sub: "tests failed" },
-    { label: "Failure Rate",   value: fmtPct(effectiveSummary.failureRate), color: effectiveSummary.failureRate > 10 ? "var(--accent-red)" : "var(--accent-yellow)", sub: "of all tests" },
-    { label: "New Failures",   value: String(effectiveSummary.newFailures), color: "var(--accent-yellow)", sub: "newly introduced" },
-    { label: "Flaky Tests",    value: String(effectiveSummary.flakyTests),  color: "var(--accent-purple)", sub: "intermittent" },
-    { label: "Open Actions",   value: String(openActions),                  color: "var(--accent-blue)",   sub: `of ${effectiveActions.length} total` },
-    ...(effectiveImpact ? [{ label: "Overall Risk", value: effectiveImpact.overallRisk, color: riskColor ?? "var(--text-muted)", sub: effectiveImpact.estimatedFixTime }] : []),
+  const tiles = [
+    isAll
+      ? { label: "Scenarios affected", value: String(tabs.newFailures), sub: "failed at least once" }
+      : { label: "New failures", value: String(tabs.newFailures), sub: "since previous run" },
+    ...(tabs.recurring !== null
+      ? [{ label: "Recurring", value: String(tabs.recurring), sub: isAll ? "failed in 2+ runs" : "also failed last run" }]
+      : []),
+    { label: "Flaky", value: String(run.totals.flaky), sub: "passed on retry" },
+    { label: "Open actions", value: String(openActions), sub: `of ${tabs.actions.length} total` },
+    { label: "Tests run", value: `${executed}/${totalTests}`, sub: "executed" },
   ];
 
-  const runTimeMeta = selectedRun
-    ? new Date(selectedRun.timestamp).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false })
-    : null;
+  const counts: Record<string, number> = {
+    errors: tabs.errors.length, rca: tabs.rca.length, mapping: tabs.mapping.length,
+    fixes: tabs.fixes.length, improvements: tabs.improvements.length, actions: tabs.actions.length,
+  };
 
   return (
     <div className={clx("fa2-root", className)}>
 
-      {/* Summary Panel */}
-      <div className="fa2-summary-panel">
-        <div className="fa2-summary-header">
-          <span className="fa2-summary-title">Failure Analysis Summary</span>
-          <div className="fa2-summary-right">
-            {runsProp && runsProp.length > 1 && (
-              <select
-                className="fa2-run-select"
-                value={selectedRunId ?? ""}
-                onChange={e => setSelectedRunId(e.target.value)}
-                title="Select execution run"
-              >
-                {[...runsProp].reverse().map(r => (
-                  <option key={r.runId} value={r.runId}>
-                    {formatRunOption(r, latestRunId)}
-                  </option>
-                ))}
-              </select>
-            )}
-            <span className="fa2-summary-meta">
-              {runTimeMeta ? `Run · ${runTimeMeta}` : `Generated ${timeAgo(data.generatedAt)}`}
-            </span>
-          </div>
+      {/* Overview */}
+      <div className="fa3-overview">
+        <div className="fa3-head">
+          <h3>Failure overview</h3>
+          <span className="fa2-source">
+            {external ? `AI analysis · generated ${timeAgo(external.generatedAt)}`
+              : isAll ? `Derived from ${run.aggregateOf} runs` : "Derived from run results"}
+          </span>
         </div>
-        <div className="fa2-kpi-grid">
-          {kpis.map(k => (
-            <div key={k.label} className="fa2-kpi-card" style={{ borderLeft: `3px solid ${k.color}` }}>
-              <span className="fa2-kpi-lbl">{k.label}</span>
-              <span className="fa2-kpi-val" style={{ color: k.color }}>{k.value}</span>
-              <span className="fa2-kpi-sub">{k.sub}</span>
-            </div>
-          ))}
-          {effectiveCoverage && (
-            <div className="fa2-kpi-card" style={{ borderLeft: "3px solid var(--accent-green)" }}>
-              <span className="fa2-kpi-lbl">Tests Run</span>
-              <span className="fa2-kpi-val" style={{ color: "var(--accent-green)" }}>
-                {effectiveCoverage.executed}<span className="fa2-kpi-of">/{effectiveCoverage.totalTests}</span>
-              </span>
-              <span className="fa2-kpi-sub">executed</span>
+
+        <div className={clx("fa3-grid", !hasFailures && "fa3-grid-clean")}>
+          <div className="fa3-headline">
+            {hasFailures ? (
+              <>
+                <div className="fa3-big">
+                  <span className="fa3-big-num">{failures}</span>
+                  <span className="fa3-big-of">of {totalTests} {unit} failed</span>
+                </div>
+                <div className="fa3-rate">
+                  <div className="fa3-rate-track"><span style={{ width: `${Math.min(100, failureRate)}%` }} /></div>
+                  <span>{fmtPct(failureRate)} failure rate</span>
+                </div>
+                {risk && (
+                  <div className="fa3-risk">
+                    <span className={clx("fa2-risk-pill", RISK_CLS[risk])}>{risk} risk</span>
+                    <span className="fa3-risk-note">{tabs.impact?.estimatedFixTime}</span>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="fa3-clean">
+                <span className="fa3-clean-icon" aria-hidden="true">✓</span>
+                <div>
+                  <div className="fa3-clean-title">No failures</div>
+                  <div className="fa3-clean-sub">All {executed} executed {unit} passed.</div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {hasFailures && (
+            <div className="fa3-causes">
+              <div className="fa3-col-title">What caused them</div>
+              <div className="fa3-cause-bar" role="img"
+                aria-label={tabs.rootCauses.map(r => `${r.type}: ${r.count}`).join(", ")}>
+                {tabs.rootCauses.map((r, i) => (
+                  <span key={r.type} style={{ width: `${(r.count / causeTotal) * 100}%`, background: categoryColor(r.type, i) }}
+                    title={`${r.type}: ${r.count}`} />
+                ))}
+              </div>
+              <ul className="fa3-legend">
+                {tabs.rootCauses.map((r, i) => (
+                  <li key={r.type}>
+                    <i style={{ background: categoryColor(r.type, i) }} />
+                    <span className="fa3-legend-label">{r.type}</span>
+                    <b>{r.count}</b>
+                    <span className="muted">{Math.round((r.count / causeTotal) * 100)}%</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
+
+          {hasFailures && (
+            <div className="fa3-stories">
+              <div className="fa3-col-title">Where they happened</div>
+              <ul>
+                {tabs.mapping.slice(0, 5).map(m => {
+                  const st = splitStory(m.area);
+                  return (
+                    <li key={m.area} title={m.area}>
+                      <span className="fa3-story-name">
+                        {st.id && <span className="story-id">{st.id}</span>}
+                        <span className="fa3-story-title">{st.title}</span>
+                      </span>
+                      <span className="fa3-story-bar"><span style={{ width: `${(m.failures / storyMax) * 100}%` }} /></span>
+                      <b className="num">{m.failures}</b>
+                      <Pill label={m.severity} cls={SEV_CLS[m.severity]} />
+                    </li>
+                  );
+                })}
+                {tabs.mapping.length > 5 && (
+                  <li className="fa3-more">
+                    <button className="fa3-link" onClick={() => setTab("mapping")}>
+                      +{tabs.mapping.length - 5} more stories &rarr;
+                    </button>
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <div className="fa3-tiles">
+          {tiles.map(t => (
+            <div key={t.label} className="fa3-tile">
+              <span className="fa3-tile-label">{t.label}</span>
+              <span className="fa3-tile-value">{t.value}</span>
+              <span className="fa3-tile-sub">{t.sub}</span>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -662,6 +838,7 @@ export function FailureAnalyticsSection({ dataUrl, runs: runsProp, className }: 
               className={clx("fa2-tab", tab === t.id && "fa2-tab-active")}
               onClick={() => setTab(t.id)}>
               {t.label}
+              {hasFailures && counts[t.id] > 0 && <span className="fa2-tab-count">{counts[t.id]}</span>}
             </button>
           ))}
         </div>
@@ -669,17 +846,23 @@ export function FailureAnalyticsSection({ dataUrl, runs: runsProp, className }: 
         <div className="fa2-panel" role="tabpanel">
           {!hasFailures ? (
             <div className="fa2-empty fa2-no-failures">
-              ✅ No failures in this run — all {effectiveCoverage?.executed ?? 0} tests passed.
+              ✅ No failures in this run — all {executed} tests passed.
+            </div>
+          ) : !hasDetail && !external ? (
+            <div className="fa2-empty">
+              This run was recorded before per-scenario results were captured, so failure details are not available.
             </div>
           ) : (
             <>
-              {tab === "errors"       && <TabErrors       items={effectiveErrors} />}
-              {tab === "rca"          && <TabRCA          items={effectiveRca} rootCauses={effectiveRootCauses} />}
-              {tab === "mapping"      && <TabMapping      items={effectiveMapping} />}
-              {tab === "fixes"        && <TabFixes        items={effectiveFixes} />}
-              {tab === "improvements" && <TabImprovements items={effectiveImprovements} />}
-              {tab === "impact"       && <TabImpact       data={effectiveImpact} />}
-              {tab === "actions"      && <TabActions      items={effectiveActions} />}
+              {tab === "errors"       && <TabErrors       items={tabs.errors} />}
+              {tab === "rca"          && <TabRCA          items={tabs.rca} rootCauses={tabs.rootCauses} />}
+              {tab === "mapping"      && <TabMapping      items={tabs.mapping} />}
+              {tab === "fixes"        && (tabs.fixes.length > 0 || external
+                ? <TabFixes items={tabs.fixes} />
+                : <div className="fa2-empty">Code-level fix suggestions come from the AI analysis pipeline, and none have been generated for this run yet. See the Improvements and Actions tabs for guidance derived from the failures.</div>)}
+              {tab === "improvements" && <TabImprovements items={tabs.improvements} />}
+              {tab === "impact"       && <TabImpact       data={tabs.impact} />}
+              {tab === "actions"      && <TabActions      items={tabs.actions} />}
             </>
           )}
         </div>

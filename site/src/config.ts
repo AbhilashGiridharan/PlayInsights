@@ -56,3 +56,22 @@ export const artifactReportUrl = (_runId: string): string => {
   // helper in case you want to directly link to the artifact zip.
   return `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/actions`;
 };
+
+// ── ROI assumptions ──────────────────────────────────────────────────────────
+// Manual effort is estimated from the Gherkin steps of PASSED scenarios only:
+// a failed scenario did not deliver a verified result, so it saves nothing.
+
+/** Minutes a tester needs to perform and verify one Gherkin step by hand. */
+export const MANUAL_MINS_PER_STEP = 1;
+
+/** Used only for scenarios recorded without a step count. */
+export const FALLBACK_MINS_PER_SCENARIO = 5;
+
+/** Blended QA hourly rate (USD) used for cost-savings figures. */
+export const HOURLY_RATE_USD = 50;
+
+export const ROI = {
+  minsPerStep: MANUAL_MINS_PER_STEP,
+  fallbackMinsPerScenario: FALLBACK_MINS_PER_SCENARIO,
+  hourlyRate: HOURLY_RATE_USD,
+};

@@ -3,6 +3,8 @@ import type { RunSummary } from "../types";
 
 interface RunsTableProps {
   runs: RunSummary[];
+  selectedRunId?: string | null;
+  onSelectRun?: (runId: string) => void;
 }
 
 type SortKey = "timestamp" | "passRate" | "totals.passed" | "totals.failed" | "durations.totalMs";
@@ -33,7 +35,7 @@ function getSortValue(run: RunSummary, key: SortKey): number | string {
   }
 }
 
-export function RunsTable({ runs }: RunsTableProps) {
+export function RunsTable({ runs, selectedRunId, onSelectRun }: RunsTableProps) {
   const [project, setProject] = useState("All");
   const [suite, setSuite] = useState("All");
   const [status, setStatus] = useState("All");
@@ -85,7 +87,11 @@ export function RunsTable({ runs }: RunsTableProps) {
       if (status === "Flaky" && r.totals.flaky === 0) return false;
       if (os !== "All" && r.environment?.os !== os) return false;
       if (browser !== "All" && r.environment?.browser !== browser) return false;
-      if (search && !r.author.includes(search) && !r.runId.includes(search)) return false;
+      if (search) {
+        const q = search.toLowerCase();
+        const hay = [r.author, r.runId, r.feature ?? r.environment?.feature ?? ""].join(" ").toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
       return true;
     });
   }, [runs, project, suite, status, os, browser, search]);
@@ -164,10 +170,10 @@ export function RunsTable({ runs }: RunsTableProps) {
           <label>Search</label>
           <input
             type="text"
-            placeholder="author / run ID"
+            placeholder="author / run ID / feature"
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            style={{ width: 180 }}
+            style={{ width: 220 }}
           />
         </div>
       </div>
@@ -188,7 +194,7 @@ export function RunsTable({ runs }: RunsTableProps) {
               <th>Skipped</th>
               <th>Flaky</th>
               <th onClick={() => handleSort("durations.totalMs")}>Duration{sortIcon("durations.totalMs")}</th>
-              <th>Links</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -200,7 +206,7 @@ export function RunsTable({ runs }: RunsTableProps) {
               </tr>
             )}
             {paginated.map((run) => (
-              <tr key={run.runId}>
+              <tr key={run.runId} className={run.runId === selectedRunId ? "is-selected" : undefined}>
                 <td className="mono">
                   {new Date(run.timestamp).toLocaleString("en-US", {
                     month: "short", day: "numeric",
@@ -256,7 +262,16 @@ export function RunsTable({ runs }: RunsTableProps) {
                   {run.totals.flaky}
                 </td>
                 <td className="mono">{fmt(run.durations.totalMs)}</td>
-                <td>
+                <td className="row-actions">
+                  {onSelectRun && (
+                    <button
+                      className={`btn btn-sm${run.runId === selectedRunId ? " btn-primary" : ""}`}
+                      onClick={() => onSelectRun(run.runId)}
+                      title="Show the report for this run"
+                    >
+                      {run.runId === selectedRunId ? "Viewing" : "Report"}
+                    </button>
+                  )}
                   {run.ciUrl && (
                     <a
                       href={run.ciUrl}
@@ -265,7 +280,7 @@ export function RunsTable({ runs }: RunsTableProps) {
                       className="btn btn-sm"
                       title="View CI Run"
                     >
-                      CI ↗
+                      Raw ↗
                     </a>
                   )}
                 </td>
