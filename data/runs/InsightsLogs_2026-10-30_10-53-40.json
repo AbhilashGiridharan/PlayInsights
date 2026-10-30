@@ -1,0 +1,120 @@
+{
+  "runId": "InsightsLogs_2026-10-30_10-53-40",
+  "timestamp": "2026-10-30T05:35:52.267Z",
+  "branch": "main",
+  "commit": "4da58a56e7f8f07086bd06c599c7b23689fb3b65",
+  "author": "NoothannagasaiOM",
+  "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-10-30_10-53-40",
+  "source": "InsightsLogs",
+  "environment": {
+    "hostname": "MAINM46ZLPC1890",
+    "os": "Darwin 25.6.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v22.23.1",
+    "playwright": "v1.62.1",
+    "browser": "Chromium (Playwright-managed)",
+    "feature": "job-risk-assessment",
+    "executedAt": "2026-10-30T05:23:40.107Z"
+  },
+  "totals": {
+    "passed": 20,
+    "failed": 2,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "durations": {
+    "totalMs": 711283,
+    "avgTestMs": 32331,
+    "p95TestMs": 68338
+  },
+  "passRate": 90.9,
+  "suites": [
+    {
+      "name": "US-01 Find and Browse Job Risk Assessments",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 14183
+    },
+    {
+      "name": "US-02 Create a New Job Risk Assessment",
+      "passed": 5,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 143951
+    },
+    {
+      "name": "US-03 View Job Risk Assessment Details",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 15853
+    },
+    {
+      "name": "US-04 Generate the Job Risk Assessment PDF Report",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 9627
+    },
+    {
+      "name": "US-05 Log in as a JRA user from Setup (Login As by profile)",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 66502
+    },
+    {
+      "name": "US-06 JRA Submitter creates a Job Risk Assessment and keeps its ID",
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 71909
+    },
+    {
+      "name": "US-08 JRA Supervisor opens the submitted assessment and sees the same values",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 107983
+    },
+    {
+      "name": "US-09 JRA Supervisor approves the assessment",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 151724
+    },
+    {
+      "name": "US-10 Open the approved PDF in Files",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 61213
+    },
+    {
+      "name": "US-11 End-to-end - Submitter submits, Supervisor approves the same assessment",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 68338
+    }
+  ],
+  "projects": [
+    {
+      "name": "AbhilashGiridharan/InsightsLogs",
+      "passed": 20,
+      "failed": 2,
+      "skipped": 0
+    }
+  ],
+  "longestTest": {
+    "name": "SC-09.02 JRA Supervisor re-approves an already approved assessment",
+    "durationMs": 96342
+  },
+  "fastestTest": {
+    "name": "SC-01.01 Open Job Risk Assessments from the App Launcher and see the Recently Viewed list",
+    "durationMs": 3752
+  }
+}

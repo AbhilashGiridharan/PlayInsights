@@ -222,7 +222,7 @@ async function main(): Promise<void> {
     const files = folderItems.filter((i) => i.type === "file");
 
     // 3. Read summary.json for generatedAt timestamp + environment
-    let generatedAt = folder.replace(/_(\/d{2})-(\/d{2})-(\/d{2})$/, "T$1:$2:$3") + "Z";
+    let generatedAt = folder.replace(/_(\d{2})-(\d{2})-(\d{2})$/, "T$1:$2:$3") + "Z";
     let environment: RunEnvironment | undefined;
     const summaryItem = files.find((f) => f.name === "summary.json");
     if (summaryItem?.download_url) {
@@ -277,10 +277,22 @@ async function main(): Promise<void> {
       passed: 0, failed: 0, skipped: 0,
     };
 
+    let parsedReportFiles = 0;
+
     for (const item of reportItems) {
       if (!item.download_url) continue;
-      const raw  = await rawFileGet(item.download_url);
-      const features: CucumberFeature[] = JSON.parse(raw);
+      let features: CucumberFeature[];
+      try {
+        const raw = await rawFileGet(item.download_url);
+        features = JSON.parse(raw) as CucumberFeature[];
+      } catch {
+        console.warn(
+          `[ingest] ⚠  Failed to parse report file ${item.name} in ${folder} – skipping file.`
+        );
+        continue;
+      }
+
+      parsedReportFiles++;
 
       for (const feature of features) {
         const suite: SuiteSummary = {
@@ -311,6 +323,11 @@ async function main(): Promise<void> {
 
         suites.push(suite);
       }
+    }
+
+    if (parsedReportFiles === 0) {
+      console.warn(`[ingest] ⚠  No valid report files in ${folder} – skipping folder.`);
+      continue;
     }
 
     // 6. Build RunSummary

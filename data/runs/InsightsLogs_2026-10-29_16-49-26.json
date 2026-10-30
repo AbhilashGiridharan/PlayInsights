@@ -1,0 +1,78 @@
+{
+  "runId": "InsightsLogs_2026-10-29_16-49-26",
+  "timestamp": "2026-10-29T11:20:18.080Z",
+  "branch": "main",
+  "commit": "60697bee719580c602351a22303ff76f6c04b1b2",
+  "author": "NoothannagasaiOM",
+  "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-10-29_16-49-26",
+  "source": "InsightsLogs",
+  "environment": {
+    "hostname": "MAINM46ZLPC1890",
+    "os": "Darwin 25.6.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v22.23.1",
+    "playwright": "v1.62.1",
+    "browser": "Chromium (Playwright-managed)",
+    "feature": "job-risk-assessment",
+    "executedAt": "2026-10-29T11:19:26.381Z"
+  },
+  "totals": {
+    "passed": 8,
+    "failed": 3,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "durations": {
+    "totalMs": 93704,
+    "avgTestMs": 8519,
+    "p95TestMs": 12317
+  },
+  "passRate": 72.7,
+  "suites": [
+    {
+      "name": "US-01 Find and Browse Job Risk Assessments",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 16795
+    },
+    {
+      "name": "US-03 View Job Risk Assessment Details",
+      "passed": 1,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 20419
+    },
+    {
+      "name": "US-02 Create a New Job Risk Assessment",
+      "passed": 5,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 45293
+    },
+    {
+      "name": "US-04 Generate the Job Risk Assessment PDF Report",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 11197
+    }
+  ],
+  "projects": [
+    {
+      "name": "AbhilashGiridharan/InsightsLogs",
+      "passed": 8,
+      "failed": 3,
+      "skipped": 0
+    }
+  ],
+  "longestTest": {
+    "name": "SC-03.02 Record page offers the actions, the Related tab and the Activity panel",
+    "durationMs": 12317
+  },
+  "fastestTest": {
+    "name": "SC-02.06 Saving an empty New form is blocked with an error and creates no record",
+    "durationMs": 4759
+  }
+}

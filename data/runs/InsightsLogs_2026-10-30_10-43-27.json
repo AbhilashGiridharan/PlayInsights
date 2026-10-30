@@ -1,0 +1,85 @@
+{
+  "runId": "InsightsLogs_2026-10-30_10-43-27",
+  "timestamp": "2026-10-30T05:16:45.542Z",
+  "branch": "main",
+  "commit": "67b385486d7d8add90128fb5cd2489b61f47838c",
+  "author": "NoothannagasaiOM",
+  "ciUrl": "https://github.com/AbhilashGiridharan/InsightsLogs/tree/main/Test-Automation/2026-10-30_10-43-27",
+  "source": "InsightsLogs",
+  "environment": {
+    "hostname": "MAINM46ZLPC1890",
+    "os": "Darwin 25.6.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v22.23.1",
+    "playwright": "v1.62.1",
+    "browser": "Chromium (Playwright-managed)",
+    "feature": "job-risk-assessment",
+    "executedAt": "2026-10-30T05:13:28.109Z"
+  },
+  "totals": {
+    "passed": 1,
+    "failed": 6,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "durations": {
+    "totalMs": 183250,
+    "avgTestMs": 26179,
+    "p95TestMs": 34572
+  },
+  "passRate": 14.3,
+  "suites": [
+    {
+      "name": "US-01 Find and Browse Job Risk Assessments",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 12454
+    },
+    {
+      "name": "US-02 Create a New Job Risk Assessment",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 34572
+    },
+    {
+      "name": "US-04 Generate the Job Risk Assessment PDF Report",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 14142
+    },
+    {
+      "name": "US-05 Log in as a JRA user from Setup (Login As by profile)",
+      "passed": 0,
+      "failed": 2,
+      "skipped": 0,
+      "durationMs": 60940
+    },
+    {
+      "name": "US-06 JRA Submitter creates a Job Risk Assessment and keeps its ID",
+      "passed": 0,
+      "failed": 2,
+      "skipped": 0,
+      "durationMs": 61142
+    }
+  ],
+  "projects": [
+    {
+      "name": "AbhilashGiridharan/InsightsLogs",
+      "passed": 1,
+      "failed": 6,
+      "skipped": 0
+    }
+  ],
+  "longestTest": {
+    "name": "SC-02.04 Save & New creates the record and opens a new, empty form",
+    "durationMs": 34572
+  },
+  "fastestTest": {
+    "name": "SC-01.02 Search the list for a created assessment and open its record page",
+    "durationMs": 12454
+  }
+}
